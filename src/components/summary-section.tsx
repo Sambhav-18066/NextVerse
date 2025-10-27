@@ -1,11 +1,11 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { handleGenerateSummary, type SummaryState } from '@/lib/actions';
 import { Bot, Loader2, Sparkles } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface SummarySectionProps {
@@ -34,7 +34,7 @@ function SubmitButton() {
 
 export function SummarySection({ videoId, onSummaryGenerated }: SummarySectionProps) {
   const initialState: SummaryState = {};
-  const [state, formAction] = useFormState(handleGenerateSummary.bind(null, videoId), initialState);
+  const [state, formAction] = useActionState(handleGenerateSummary.bind(null, videoId), initialState);
   const { toast } = useToast();
 
   useEffect(() => {

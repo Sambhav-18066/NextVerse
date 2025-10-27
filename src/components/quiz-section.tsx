@@ -1,10 +1,10 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { handleGenerateQuiz, type QuizState } from '@/lib/actions';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type { QuizQuestion, Video } from '@/lib/types';
 import { ArrowRight, BrainCircuit, CheckCircle, Loader2, Sparkles, XCircle } from 'lucide-react';
@@ -45,7 +45,7 @@ function GenerateButton() {
 
 export function QuizSection({ videoId, summary, nextVideo, courseId, onQuizPassed, currentProgress, isQuizPassed }: QuizSectionProps) {
   const initialState: QuizState = {};
-  const [state, formAction] = useFormState(handleGenerateQuiz.bind(null, summary || ''), initialState);
+  const [state, formAction] = useActionState(handleGenerateQuiz.bind(null, summary || ''), initialState);
   const { toast } = useToast();
   
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);

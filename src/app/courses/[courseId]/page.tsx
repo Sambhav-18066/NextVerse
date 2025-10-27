@@ -15,7 +15,7 @@ interface CoursePageProps {
   };
 }
 
-export default function CoursePage({ params, searchParams }: CoursePageProps) {
+export default async function CoursePage({ params, searchParams }: CoursePageProps) {
   const course = getCourseById(params.courseId);
   if (!course) {
     notFound();

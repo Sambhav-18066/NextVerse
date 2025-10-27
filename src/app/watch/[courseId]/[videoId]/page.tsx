@@ -12,7 +12,7 @@ interface WatchPageProps {
   };
 }
 
-export default function WatchPage({ params, searchParams }: WatchPageProps) {
+export default async function WatchPage({ params, searchParams }: WatchPageProps) {
   const course = getCourseById(params.courseId);
   const video = getVideoById(params.videoId);
   const nextVideo = getNextVideo(params.courseId, params.videoId);
