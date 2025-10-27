@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Grants public read access to courses but restricts write access to admins only.
+     * @path /courses/{courseId}
+     * @allow (get, list): if true;
+     * @allow (create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
+     * @deny (create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
+     * @principle Allows public read access while restricting modifications to authorized admins.
+     */
+    match /courses/{courseId} {
+      allow get, list: if true;
+      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    /**
+     * @description Grants public read access to videos but restricts write access to admins only.
+     * @path /courses/{courseId}/videos/{videoId}
+     * @allow (get, list): if true;
+     * @allow (create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
+     * @deny (create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
+     * @principle Allows public read access while restricting modifications to authorized admins.
+     */
+    match /courses/{courseId}/videos/{videoId} {
+      allow get, list: if true;
+      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    /**
+     * @description Grants public read access to quizzes but restricts write access to admins only.
+     * @path /quizzes/{quizId}
+     * @allow (get, list): if true;
+     * @allow (create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
+     * @deny (create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
+     * @principle Allows public read access while restricting modifications to authorized admins.
+     */
+    match /quizzes/{quizId} {
+      allow get, list: if true;
+      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    /**
+     * @description Grants public read access to questions but restricts write access to admins only.
+     * @path /questions/{questionId}
+     * @allow (get, list): if true;
+     * @allow (create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
+     * @deny (create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
+     * @principle Allows public read access while restricting modifications to authorized admins.
+     */
+    match /questions/{questionId} {
+      allow get, list: if true;
+      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    /**
+     * @description Grants owner-only access to user profiles.
+     * @path /users/{userId}
+     * @allow (get): if isOwner(userId);
+     * @allow (create): if isOwner(userId);
+     * @allow (update, delete): if isExistingOwner(userId);
+     * @deny (list): if true;
+     * @principle Enforces document ownership for all operations on user profiles.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId);
+      allow update, delete: if isOwner(userId);
+    }
+
+    /**
+     * @description Grants admin-only access to admin user management.
+     * @path /admins/{adminId}
+     * @allow (get, list, create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
+     * @deny (get, list, create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
+     * @principle Restricts admin management to existing admins.
+     */
+    match /admins/{adminId} {
+      allow get, list, create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isExistingOwner(userId) {
+        return isOwner(userId) && exists(/databases/$(database)/documents/users/$(userId));
+    }
+
+    function isAdmin(userId) {
+      return exists(/databases/$(database)/documents/admins/$(userId));
+    }
+  }
+}

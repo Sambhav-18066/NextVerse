@@ -1,0 +1,315 @@
+{
+  "entities": {
+    "Course": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Course",
+      "type": "object",
+      "description": "Represents a course in the EduStream platform.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the course."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the course."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the course content."
+        },
+        "subject": {
+          "type": "string",
+          "description": "The subject area or category of the course (e.g., Engineering, Agriculture, Health Science, Analog Modulation, Digital Modulation)."
+        },
+        "videoIds": {
+          "type": "array",
+          "description": "References to Videos. (Relationship: Course 1:N Video)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "description": "URL for the course thumbnail image.",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "subject",
+        "videoIds",
+        "thumbnailUrl"
+      ]
+    },
+    "Video": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Video",
+      "type": "object",
+      "description": "Represents a video within a course.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the video."
+        },
+        "courseId": {
+          "type": "string",
+          "description": "Reference to Course. (Relationship: Course 1:N Video)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the video."
+        },
+        "youtubeUrl": {
+          "type": "string",
+          "description": "The YouTube URL of the video.",
+          "format": "uri"
+        },
+        "order": {
+          "type": "number",
+          "description": "The order of the video within the course."
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to Quiz. (Relationship: Video 1:1 Quiz)"
+        }
+      },
+      "required": [
+        "id",
+        "courseId",
+        "title",
+        "youtubeUrl",
+        "order",
+        "quizId"
+      ]
+    },
+    "Quiz": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Quiz",
+      "type": "object",
+      "description": "Represents a quiz associated with a video.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the quiz."
+        },
+        "questions": {
+          "type": "array",
+          "description": "An array of question objects.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "questions"
+      ]
+    },
+    "Question": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Question",
+      "type": "object",
+      "description": "Represents a question in a quiz.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the question."
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to Quiz. (Relationship: Quiz 1:N Question)"
+        },
+        "text": {
+          "type": "string",
+          "description": "The text of the question."
+        },
+        "options": {
+          "type": "array",
+          "description": "An array of answer options for the question.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "correctAnswerIndex": {
+          "type": "number",
+          "description": "The index of the correct answer in the options array (0-based)."
+        }
+      },
+      "required": [
+        "id",
+        "quizId",
+        "text",
+        "options",
+        "correctAnswerIndex"
+      ]
+    },
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user profile.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user profile."
+        },
+        "name": {
+          "type": "string",
+          "description": "User's name."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "completedCourseIds": {
+          "type": "array",
+          "description": "References to Courses. (Relationship: UserProfile N:N Course)",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "completedCourseIds"
+      ]
+    },
+    "Admin": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Admin",
+      "type": "object",
+      "description": "Represents an administrator user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the admin."
+        },
+        "username": {
+          "type": "string",
+          "description": "Admin's username."
+        }
+      },
+      "required": [
+        "id",
+        "username"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/courses/{courseId}",
+        "definition": {
+          "entityName": "Course",
+          "schema": {
+            "$ref": "#/backend/entities/Course"
+          },
+          "description": "Stores course information. Includes course ID, title, description, subject, video IDs, and thumbnail URL.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "Unique identifier for the course."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/courses/{courseId}/videos/{videoId}",
+        "definition": {
+          "entityName": "Video",
+          "schema": {
+            "$ref": "#/backend/entities/Video"
+          },
+          "description": "Stores video information related to a specific course. Includes video ID, course ID, title, YouTube URL, order, and quiz ID.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "Unique identifier for the course."
+            },
+            {
+              "name": "videoId",
+              "description": "Unique identifier for the video."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quizzes/{quizId}",
+        "definition": {
+          "entityName": "Quiz",
+          "schema": {
+            "$ref": "#/backend/entities/Quiz"
+          },
+          "description": "Stores quiz information. Includes quiz ID and a list of question IDs.",
+          "params": [
+            {
+              "name": "quizId",
+              "description": "Unique identifier for the quiz."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/questions/{questionId}",
+        "definition": {
+          "entityName": "Question",
+          "schema": {
+            "$ref": "#/backend/entities/Question"
+          },
+          "description": "Stores question information. Includes question ID, quiz ID, text, options, and the index of the correct answer.",
+          "params": [
+            {
+              "name": "questionId",
+              "description": "Unique identifier for the question."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile information. Includes user ID, name, email, and a list of completed course IDs.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "Unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/admins/{adminId}",
+        "definition": {
+          "entityName": "Admin",
+          "schema": {
+            "$ref": "#/backend/entities/Admin"
+          },
+          "description": "Stores admin user information. Used for authentication and authorization of admin users.",
+          "params": [
+            {
+              "name": "adminId",
+              "description": "Unique identifier for the admin."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support EduStream's educational content and user progress tracking. It prioritizes authorization independence and efficient data retrieval while adhering to the specified design principles. Key collections include `/courses`, `/courses/{courseId}/videos`, `/quizzes`, `/questions`, `/users/{userId}`, and `/admins`. Authorization independence is achieved by relying on path-based ownership for user-specific data and a dedicated `/admins` collection to manage administrative privileges.  The structure enables secure list operations by segregating data based on access control requirements. For instance, course data is generally public, while user-specific data resides under `/users/{userId}`, and only admins can read/write to the /admins collection."
+  }
+}
