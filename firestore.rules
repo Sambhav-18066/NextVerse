@@ -1,101 +1,152 @@
+/**
+ * @fileOverview Firestore Security Rules for EduStream
+ *
+ * Core Philosophy:
+ * This ruleset enforces a user-ownership model for user-specific data and allows public read access for video metadata.
+ *
+ * Data Structure:
+ * - User profiles are stored under `/users/{userId}`.
+ * - User progress is stored under `/users/{userId}/progress/{progressId}`.
+ * - Video metadata is stored under `/videos/{videoId}`.
+ * - Quizzes are stored under `/videos/{videoId}/quizzes/{quizId}`.
+ * - Questions are stored under `/videos/{videoId}/quizzes/{quizId}/questions/{questionId}`.
+ * - Answer Options are stored under `/videos/{videoId}/quizzes/{quizId}/questions/{questionId}/answerOptions/{answerOptionId}`.
+ * - 3D Models are stored under `/videos/{videoId}/models3D/{model3DId}`.
+ *
+ * Key Security Decisions:
+ * - Users can only read and write their own profile data and progress.
+ * - Video metadata is publicly readable but has restricted write access (currently disabled in this prototyping phase).
+ * - Data consistency between the path and document data is enforced for user-owned data.
+ *
+ * Denormalization for Authorization:
+ * - User ownership is determined by matching the `userId` path segment with `request.auth.uid`.
+ *   This avoids the need for `get()` calls to verify ownership.
+ *   - For example, the `/users/{userId}/progress/{progressId}` rule enforces that the `userId` in the path matches the authenticated user's `uid`.
+ *
+ * Structural Segregation:
+ * - Private user data (profile, progress) is stored under `/users/{userId}`, while public video data is stored under `/videos/{videoId}`.
+ *   This separation simplifies access control and improves performance for list operations.
+ */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Grants public read access to courses but restricts write access to admins only.
-     * @path /courses/{courseId}
-     * @allow (get, list): if true;
-     * @allow (create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
-     * @deny (create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
-     * @principle Allows public read access while restricting modifications to authorized admins.
-     */
-    match /courses/{courseId} {
-      allow get, list: if true;
-      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
-    }
-
-    /**
-     * @description Grants public read access to videos but restricts write access to admins only.
-     * @path /courses/{courseId}/videos/{videoId}
-     * @allow (get, list): if true;
-     * @allow (create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
-     * @deny (create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
-     * @principle Allows public read access while restricting modifications to authorized admins.
-     */
-    match /courses/{courseId}/videos/{videoId} {
-      allow get, list: if true;
-      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
-    }
-
-    /**
-     * @description Grants public read access to quizzes but restricts write access to admins only.
-     * @path /quizzes/{quizId}
-     * @allow (get, list): if true;
-     * @allow (create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
-     * @deny (create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
-     * @principle Allows public read access while restricting modifications to authorized admins.
-     */
-    match /quizzes/{quizId} {
-      allow get, list: if true;
-      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
-    }
-
-    /**
-     * @description Grants public read access to questions but restricts write access to admins only.
-     * @path /questions/{questionId}
-     * @allow (get, list): if true;
-     * @allow (create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
-     * @deny (create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
-     * @principle Allows public read access while restricting modifications to authorized admins.
-     */
-    match /questions/{questionId} {
-      allow get, list: if true;
-      allow create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
-    }
-
-    /**
-     * @description Grants owner-only access to user profiles.
+     * @description Allows users to manage their own profile data.
      * @path /users/{userId}
-     * @allow (get): if isOwner(userId);
-     * @allow (create): if isOwner(userId);
-     * @allow (update, delete): if isExistingOwner(userId);
-     * @deny (list): if true;
-     * @principle Enforces document ownership for all operations on user profiles.
+     * @allow (create) - Authenticated user creates their profile with a matching userId.
+     *   - Request: auth.uid = "user123", resource.data.id = "user123"
+     * @allow (get, update, delete) - Authenticated user accesses/modifies their own profile.
+     *   - Request: auth.uid = "user123", userId = "user123"
+     * @deny (create) - Authenticated user tries to create a profile for another user.
+     *   - Request: auth.uid = "user123", userId = "user456"
+     * @deny (get, update, delete) - Authenticated user tries to access/modify another user's profile.
+     *   - Request: auth.uid = "user123", userId = "user456"
+     * @principle Enforces document ownership for profile management.
      */
     match /users/{userId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
       allow get: if isOwner(userId);
       allow list: if false;
-      allow create: if isOwner(userId);
-      allow update, delete: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isOwner(userId) && resource.data.id == userId;
+      allow delete: if isOwner(userId) && resource.data.id == userId && resource != null;
     }
 
     /**
-     * @description Grants admin-only access to admin user management.
-     * @path /admins/{adminId}
-     * @allow (get, list, create, update, delete): if request.auth.uid != null && isAdmin(request.auth.uid);
-     * @deny (get, list, create, update, delete): if request.auth.uid == null || !isAdmin(request.auth.uid);
-     * @principle Restricts admin management to existing admins.
+     * @description Allows users to manage their own progress data.
+     * @path /users/{userId}/progress/{progressId}
+     * @allow (create) - Authenticated user creates their progress with a matching userId.
+     *   - Request: auth.uid = "user123", resource.data.userId = "user123"
+     * @allow (get, update, delete) - Authenticated user accesses/modifies their own progress.
+     *   - Request: auth.uid = "user123", userId = "user123"
+     * @deny (create) - Authenticated user tries to create progress for another user.
+     *   - Request: auth.uid = "user123", userId = "user456"
+     * @deny (get, update, delete) - Authenticated user tries to access/modify another user's progress.
+     *   - Request: auth.uid = "user123", userId = "user456"
+     * @principle Enforces document ownership for progress management.
      */
-    match /admins/{adminId} {
-      allow get, list, create, update, delete: if request.auth != null && isAdmin(request.auth.uid);
+    match /users/{userId}/progress/{progressId} {
+      function isOwner(userId) {
+        return request.auth != null && request.auth.uid == userId;
+      }
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isOwner(userId) && resource.data.userId == userId && resource != null;
+      allow delete: if isOwner(userId) && resource.data.userId == userId && resource != null;
     }
 
-    // Helper functions
-    function isSignedIn() {
-      return request.auth != null;
+    /**
+     * @description Allows public read access to video metadata. Write access is restricted.
+     * @path /videos/{videoId}
+     * @allow (get, list) - Any user can read video metadata.
+     *   - Request: No auth needed.
+     * @deny (create, update, delete) - Only authorized users can create, update, or delete videos.
+     *   - Request: auth.uid = "user123", but not authorized.
+     * @principle Allows public reads with restricted writes.
+     */
+    match /videos/{videoId} {
+      allow get, list: if true;
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
-    function isOwner(userId) {
-      return request.auth.uid == userId;
+    /**
+     * @description Allows public read access to video quizzes. Write access is restricted.
+     * @path /videos/{videoId}/quizzes/{quizId}
+     * @allow (get, list) - Any user can read quizzes for a video.
+     *   - Request: No auth needed.
+     * @deny (create, update, delete) - Only authorized users can create, update, or delete quizzes.
+     *   - Request: auth.uid = "user123", but not authorized.
+     * @principle Allows public reads with restricted writes.
+     */
+    match /videos/{videoId}/quizzes/{quizId} {
+      allow get, list: if true;
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
-    function isExistingOwner(userId) {
-        return isOwner(userId) && exists(/databases/$(database)/documents/users/$(userId));
+    /**
+     * @description Allows public read access to video questions. Write access is restricted.
+     * @path /videos/{videoId}/quizzes/{quizId}/questions/{questionId}
+     * @allow (get, list) - Any user can read questions for a quiz.
+     *   - Request: No auth needed.
+     * @deny (create, update, delete) - Only authorized users can create, update, or delete questions.
+     *   - Request: auth.uid = "user123", but not authorized.
+     * @principle Allows public reads with restricted writes.
+     */
+    match /videos/{videoId}/quizzes/{quizId}/questions/{questionId} {
+      allow get, list: if true;
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
 
-    function isAdmin(userId) {
-      return exists(/databases/$(database)/documents/admins/$(userId));
+    /**
+     * @description Allows public read access to video answer options. Write access is restricted.
+     * @path /videos/{videoId}/quizzes/{quizId}/questions/{questionId}/answerOptions/{answerOptionId}
+     * @allow (get, list) - Any user can read answer options for a question.
+     *   - Request: No auth needed.
+     * @deny (create, update, delete) - Only authorized users can create, update, or delete answer options.
+     *   - Request: auth.uid = "user123", but not authorized.
+     * @principle Allows public reads with restricted writes.
+     */
+    match /videos/{videoId}/quizzes/{quizId}/questions/{questionId}/answerOptions/{answerOptionId} {
+      allow get, list: if true;
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Allows public read access to video models. Write access is restricted.
+     * @path /videos/{videoId}/models3D/{model3DId}
+     * @allow (get, list) - Any user can read models for a video.
+     *   - Request: No auth needed.
+     * @deny (create, update, delete) - Only authorized users can create, update, or delete models.
+     *   - Request: auth.uid = "user123", but not authorized.
+     * @principle Allows public reads with restricted writes.
+     */
+    match /videos/{videoId}/models3D/{model3DId} {
+      allow get, list: if true;
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
     }
   }
 }

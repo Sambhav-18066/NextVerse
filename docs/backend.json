@@ -1,88 +1,59 @@
 {
   "entities": {
-    "Course": {
+    "User": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Course",
+      "title": "User",
       "type": "object",
-      "description": "Represents a course in the NextVerseEducation platform.",
+      "description": "Represents a user of the EduStream platform.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the course."
+          "description": "Unique identifier for the User entity."
         },
-        "title": {
+        "name": {
           "type": "string",
-          "description": "The title of the course."
+          "description": "User's full name."
         },
-        "description": {
+        "email": {
           "type": "string",
-          "description": "A brief description of the course content."
-        },
-        "subject": {
-          "type": "string",
-          "description": "The subject area or category of the course (e.g., Engineering, Agriculture, Health Science, Analog Modulation, Digital Modulation)."
-        },
-        "videoIds": {
-          "type": "array",
-          "description": "References to Videos. (Relationship: Course 1:N Video)",
-          "items": {
-            "type": "string"
-          }
-        },
-        "thumbnailUrl": {
-          "type": "string",
-          "description": "URL for the course thumbnail image.",
-          "format": "uri"
+          "description": "User's email address.",
+          "format": "email"
         }
       },
       "required": [
         "id",
-        "title",
-        "description",
-        "subject",
-        "videoIds",
-        "thumbnailUrl"
+        "name",
+        "email"
       ]
     },
     "Video": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Video",
       "type": "object",
-      "description": "Represents a video within a course.",
+      "description": "Represents an educational video.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the video."
-        },
-        "courseId": {
-          "type": "string",
-          "description": "Reference to Course. (Relationship: Course 1:N Video)"
+          "description": "Unique identifier for the Video entity."
         },
         "title": {
           "type": "string",
-          "description": "The title of the video."
+          "description": "Title of the video."
         },
-        "youtubeUrl": {
+        "youtubeLink": {
           "type": "string",
-          "description": "The YouTube URL of the video.",
+          "description": "Link to the video on YouTube.",
           "format": "uri"
         },
-        "order": {
-          "type": "number",
-          "description": "The order of the video within the course."
-        },
-        "quizId": {
+        "summary": {
           "type": "string",
-          "description": "Reference to Quiz. (Relationship: Video 1:1 Quiz)"
+          "description": "AI-generated summary of the video content."
         }
       },
       "required": [
         "id",
-        "courseId",
         "title",
-        "youtubeUrl",
-        "order",
-        "quizId"
+        "youtubeLink"
       ]
     },
     "Quiz": {
@@ -93,19 +64,16 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the quiz."
+          "description": "Unique identifier for the Quiz entity."
         },
-        "questions": {
-          "type": "array",
-          "description": "An array of question objects.",
-          "items": {
-            "type": "string"
-          }
+        "videoId": {
+          "type": "string",
+          "description": "Reference to Video. (Relationship: Video 1:1 Quiz)"
         }
       },
       "required": [
         "id",
-        "questions"
+        "videoId"
       ]
     },
     "Question": {
@@ -116,7 +84,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the question."
+          "description": "Unique identifier for the Question entity."
         },
         "quizId": {
           "type": "string",
@@ -124,80 +92,112 @@
         },
         "text": {
           "type": "string",
-          "description": "The text of the question."
-        },
-        "options": {
-          "type": "array",
-          "description": "An array of answer options for the question.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "correctAnswerIndex": {
-          "type": "number",
-          "description": "The index of the correct answer in the options array (0-based)."
+          "description": "Text of the question."
         }
       },
       "required": [
         "id",
         "quizId",
-        "text",
-        "options",
-        "correctAnswerIndex"
+        "text"
       ]
     },
-    "UserProfile": {
+    "AnswerOption": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "UserProfile",
+      "title": "AnswerOption",
       "type": "object",
-      "description": "Represents a user profile.",
+      "description": "Represents an answer option for a quiz question.",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the user profile."
+          "description": "Unique identifier for the AnswerOption entity."
+        },
+        "questionId": {
+          "type": "string",
+          "description": "Reference to Question. (Relationship: Question 1:N AnswerOption)"
+        },
+        "text": {
+          "type": "string",
+          "description": "Text of the answer option."
+        },
+        "isCorrect": {
+          "type": "boolean",
+          "description": "Indicates whether this answer option is the correct answer."
+        }
+      },
+      "required": [
+        "id",
+        "questionId",
+        "text",
+        "isCorrect"
+      ]
+    },
+    "Progress": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Progress",
+      "type": "object",
+      "description": "Represents a user's progress in a video or topic.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Progress entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Progress)"
+        },
+        "videoId": {
+          "type": "string",
+          "description": "Reference to Video. (Relationship: Video 1:N Progress)"
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to Quiz. (Relationship: Quiz 1:N Progress)"
+        },
+        "isCompleted": {
+          "type": "boolean",
+          "description": "Indicates whether the user has completed the video and quiz."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "videoId",
+        "quizId",
+        "isCompleted"
+      ]
+    },
+    "Model3D": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Model3D",
+      "type": "object",
+      "description": "Represents a 3D model integrated into the learning experience.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the 3D Model entity."
         },
         "name": {
           "type": "string",
-          "description": "User's name."
+          "description": "Name of the 3D model."
         },
-        "email": {
+        "sketchfabUrl": {
           "type": "string",
-          "description": "User's email address.",
-          "format": "email"
+          "description": "URL of the 3D model on Sketchfab.",
+          "format": "uri"
         },
-        "completedCourseIds": {
-          "type": "array",
-          "description": "References to Courses. (Relationship: UserProfile N:N Course)",
-          "items": {
-            "type": "string"
-          }
+        "uploadUrl": {
+          "type": "string",
+          "description": "URL where the 3D model has been uploaded."
+        },
+        "videoId": {
+          "type": "string",
+          "description": "Reference to Video. (Relationship: Video 1:N Model3D)"
         }
       },
       "required": [
         "id",
         "name",
-        "email",
-        "completedCourseIds"
-      ]
-    },
-    "Admin": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Admin",
-      "type": "object",
-      "description": "Represents an administrator user.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the admin."
-        },
-        "username": {
-          "type": "string",
-          "description": "Admin's username."
-        }
-      },
-      "required": [
-        "id",
-        "username"
+        "videoId"
       ]
     }
   },
@@ -210,106 +210,150 @@
   "firestore": {
     "structure": [
       {
-        "path": "/courses/{courseId}",
+        "path": "/users/{userId}",
         "definition": {
-          "entityName": "Course",
+          "entityName": "User",
           "schema": {
-            "$ref": "#/backend/entities/Course"
+            "$ref": "#/backend/entities/User"
           },
-          "description": "Stores course information. Includes course ID, title, description, subject, video IDs, and thumbnail URL.",
+          "description": "Stores user profiles. All user related data must be stored as subcollections of this document.",
           "params": [
             {
-              "name": "courseId",
-              "description": "Unique identifier for the course."
+              "name": "userId",
+              "description": "The unique identifier for the user."
             }
           ]
         }
       },
       {
-        "path": "/courses/{courseId}/videos/{videoId}",
+        "path": "/videos/{videoId}",
         "definition": {
           "entityName": "Video",
           "schema": {
             "$ref": "#/backend/entities/Video"
           },
-          "description": "Stores video information related to a specific course. Includes video ID, course ID, title, YouTube URL, order, and quiz ID.",
+          "description": "Stores video metadata.  Includes a reference to the YouTube video. All Video data is publicly readable, but restricted write access.",
           "params": [
             {
-              "name": "courseId",
-              "description": "Unique identifier for the course."
-            },
-            {
               "name": "videoId",
-              "description": "Unique identifier for the video."
+              "description": "The unique identifier for the video."
             }
           ]
         }
       },
       {
-        "path": "/quizzes/{quizId}",
+        "path": "/videos/{videoId}/quizzes/{quizId}",
         "definition": {
           "entityName": "Quiz",
           "schema": {
             "$ref": "#/backend/entities/Quiz"
           },
-          "description": "Stores quiz information. Includes quiz ID and a list of question IDs.",
+          "description": "Stores quizzes associated with videos. The 'videoId' field references the associated video.",
           "params": [
             {
+              "name": "videoId",
+              "description": "The unique identifier for the video."
+            },
+            {
               "name": "quizId",
-              "description": "Unique identifier for the quiz."
+              "description": "The unique identifier for the quiz."
             }
           ]
         }
       },
       {
-        "path": "/questions/{questionId}",
+        "path": "/videos/{videoId}/quizzes/{quizId}/questions/{questionId}",
         "definition": {
           "entityName": "Question",
           "schema": {
             "$ref": "#/backend/entities/Question"
           },
-          "description": "Stores question information. Includes question ID, quiz ID, text, options, and the index of the correct answer.",
+          "description": "Stores questions for each quiz. The 'quizId' field references the parent quiz.",
           "params": [
             {
+              "name": "videoId",
+              "description": "The unique identifier for the video."
+            },
+            {
+              "name": "quizId",
+              "description": "The unique identifier for the quiz."
+            },
+            {
               "name": "questionId",
-              "description": "Unique identifier for the question."
+              "description": "The unique identifier for the question."
             }
           ]
         }
       },
       {
-        "path": "/users/{userId}",
+        "path": "/videos/{videoId}/quizzes/{quizId}/questions/{questionId}/answerOptions/{answerOptionId}",
         "definition": {
-          "entityName": "UserProfile",
+          "entityName": "AnswerOption",
           "schema": {
-            "$ref": "#/backend/entities/UserProfile"
+            "$ref": "#/backend/entities/AnswerOption"
           },
-          "description": "Stores user profile information. Includes user ID, name, email, and a list of completed course IDs.",
+          "description": "Stores answer options for each question. The 'questionId' field references the parent question.",
+          "params": [
+            {
+              "name": "videoId",
+              "description": "The unique identifier for the video."
+            },
+            {
+              "name": "quizId",
+              "description": "The unique identifier for the quiz."
+            },
+            {
+              "name": "questionId",
+              "description": "The unique identifier for the question."
+            },
+            {
+              "name": "answerOptionId",
+              "description": "The unique identifier for the answer option."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/progress/{progressId}",
+        "definition": {
+          "entityName": "Progress",
+          "schema": {
+            "$ref": "#/backend/entities/Progress"
+          },
+          "description": "Stores user progress for each video. The 'videoId' field references the video, and 'userId' references the user. Enables tracking of user progress for each video.",
           "params": [
             {
               "name": "userId",
-              "description": "Unique identifier for the user."
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "progressId",
+              "description": "The unique identifier for the progress."
             }
           ]
         }
       },
       {
-        "path": "/admins/{adminId}",
+        "path": "/videos/{videoId}/models3D/{model3DId}",
         "definition": {
-          "entityName": "Admin",
+          "entityName": "Model3D",
           "schema": {
-            "$ref": "#/backend/entities/Admin"
+            "$ref": "#/backend/entities/Model3D"
           },
-          "description": "Stores admin user information. Used for authentication and authorization of admin users.",
+          "description": "Stores 3D models associated with videos. The 'videoId' field references the video.",
           "params": [
             {
-              "name": "adminId",
-              "description": "Unique identifier for the admin."
+              "name": "videoId",
+              "description": "The unique identifier for the video."
+            },
+            {
+              "name": "model3DId",
+              "description": "The unique identifier for the 3D Model."
             }
           ]
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to support NextVerseEducation's educational content and user progress tracking. It prioritizes authorization independence and efficient data retrieval while adhering to the specified design principles. Key collections include `/courses`, `/courses/{courseId}/videos`, `/quizzes`, `/questions`, `/users/{userId}`, and `/admins`. Authorization independence is achieved by relying on path-based ownership for user-specific data and a dedicated `/admins` collection to manage administrative privileges.  The structure enables secure list operations by segregating data based on access control requirements. For instance, course data is generally public, while user-specific data resides under `/users/{userId}`, and only admins can read/write to the /admins collection."
+    "reasoning": "The Firestore structure is designed to ensure authorization independence, clarity, and scalability for the EduStream application.  User-owned data is stored under the `/users/{userId}` path to leverage path-based security.  All data related to a user's progress, videos, quizzes, questions, answers and models are stored within the user's document path to maintain a clear ownership and permission structure, as well as allowing QAPs (rules are not filters). Specifically, the user ID is embedded within the path to create ownership, thus avoiding the need for `get()` calls in security rules. This enables atomic operations (transactions/batches) and simplifies debugging.\n\nThe `/videos/{videoId}` path stores globally available video metadata.  Quiz and Model3D data related to videos are stored as subcollections under each video document.  This allows all users to list all available videos, but permissions may still be applied on specific fields to prevent unauthorized access.  The progress for a user for any given video is stored as a subcollection within the user, to ensure that a user can only modify/read their own progress.  Since a Video can have multiple Quizzes and Model3Ds, these subcollections are stored as direct children of the Video.\n\nThe structure avoids hierarchical authorization dependencies by denormalizing authorization contexts. User IDs are embedded in paths, eliminating the need for `get()` calls in security rules. This design facilitates simple, robust, and easily debuggable security rules, supporting secure `list` operations (QAPs)."
   }
 }
