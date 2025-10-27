@@ -54,6 +54,19 @@ export const courses: Course[] = [
     ],
   },
   {
+    id: 'wireless-networking-fundamentals',
+    title: 'Wireless Networking Fundamentals',
+    description: 'Understand the basics of wireless networking, including Wi-Fi standards, network security, and how data travels through the air.',
+    image: 'wireless-networking-course',
+    subject: 'Engineering',
+    videos: [
+      { id: 'wn-intro', title: 'What is Wi-Fi?', youtubeId: '7_06-g22S3E' },
+      { id: 'wn-standards', title: 'Wi-Fi Standards Explained (802.11ax)', youtubeId: 'p2n2M5i3J2o' },
+      { id: 'wn-security', title: 'Wireless Security (WPA3, WEP, etc.)', youtubeId: 'ToGao_cooEY' },
+      { id: 'wn-setup', title: 'How to Set Up a Home Network', youtubeId: 'u_ve-G4i9dc' },
+    ],
+  },
+  {
     id: 'soil-science',
     title: 'Agriculture: Introduction to Soil Science',
     description: 'Explore the composition, properties, and importance of soil in agriculture and ecosystem health.',
