@@ -1,52 +1,46 @@
 /**
- * @description This ruleset enforces a public read, owner-write model for courses. All users can view course information,
- *              but only authenticated users can create, modify, or delete courses.  Videos are secured with public read access.
- * @dataStructure
- *   /courses/{courseId} (Course): Stores course metadata.
- *   /courses/{courseId}/videos/{videoId} (Video): Stores video metadata for a specific course.
- * @keySecurityDecisions
- *   - Unauthenticated listing of courses is permitted.
- *   - Only authenticated users can create, update or delete a course.
- *   - Anyone can read videos.
- * @denormalizationForAuthorization None required
- * @structuralSegregation Public read, protected write
+ * @file Firestore Security Rules
+ * @core_philosophy This ruleset is in prototyping mode. It prioritizes strict authorization
+ *  while relaxing data validation to allow for rapid schema iteration. All write
+ *  operations are locked down to prevent unauthorized modifications, but minimal
+ *  data validation is performed.
+ * @data_structure
+ *  - /courses/{courseId}: Stores course metadata.
+ *  - /courses/{courseId}/videos/{videoId}: Stores video metadata for a specific course.
+ * @key_security_decisions
+ *  - All write operations require authentication.
+ *  - No user listing is allowed.
+ *  - Public read access is enabled for courses and videos.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read courses, but only authenticated users to create, update, or delete them.
+     * @description Allows anyone to read courses, but restricts write access to authenticated users.
      * @path /courses/{courseId}
-     * @allow (get, list): Any user can read course data.
-     * @allow (create): Only authenticated users can create courses.
-     * @allow (update, delete): Only authenticated users can update or delete existing courses.
-     * @deny (create): Unauthenticated users cannot create courses.
-     * @deny (update, delete): Unauthenticated users cannot update or delete courses.
-     * @principle Public read, protected write.
+     * @allow (get, list)
+     * @deny (create, update, delete) - No unauthenticated access.
+     * @principle Allows public reads but requires authentication for any modification.
      */
     match /courses/{courseId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update, delete: if isSignedIn() && resource != null;
+      allow create, update, delete: if isSignedIn();
     }
 
     /**
-     * @description Allows anyone to read video metadata.
+     * @description Allows anyone to read videos, but restricts write access to authenticated users.
      * @path /courses/{courseId}/videos/{videoId}
-     * @allow (get, list): Any user can read video data.
-     * @deny (create, update, delete): No one can create, update or delete videos.
-     * @principle Public read.
+     * @allow (get, list)
+     * @deny (create, update, delete) - No unauthenticated access.
+     * @principle Allows public reads but requires authentication for any modification.
      */
     match /courses/{courseId}/videos/{videoId} {
       allow get, list: if true;
-      allow create, update, delete: if false;
+      allow create, update, delete: if isSignedIn();
     }
 
-    /**
-     * @description Checks if the user is signed in.
-     * @return {bool} True if the user is signed in, false otherwise.
-     */
+    // ---- Helper functions ----
     function isSignedIn() {
       return request.auth != null;
     }
