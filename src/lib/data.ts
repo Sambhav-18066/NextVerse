@@ -94,6 +94,71 @@ export const courses: Course[] = [
       { id: 'ha-nervous', title: 'The Nervous System', youtubeId: '71pCilo8k4M' },
     ],
   },
+  {
+    id: 'intro-to-philosophy',
+    title: 'Introduction to Philosophy',
+    description: 'Explore the big questions about existence, knowledge, values, reason, mind, and language.',
+    image: 'philosophy-course',
+    subject: 'Humanities',
+    videos: [
+      { id: 'phil-what-is-it', title: 'What is Philosophy?', youtubeId: '1A_CAkYt3GY' },
+      { id: 'phil-plato', title: 'Plato\'s Allegory of the Cave', youtubeId: '1RWOpQXTltA' },
+      { id: 'phil-descartes', title: 'Descartes\' "I Think, Therefore I Am"', youtubeId: '0A6_u-eL-8g' },
+      { id: 'phil-ethics', title: 'Introduction to Ethics', youtubeId: '3_YS-iG8gA' },
+    ],
+  },
+  {
+    id: 'basics-of-graphic-design',
+    title: 'Basics of Graphic Design',
+    description: 'Learn the fundamental principles of graphic design, including color theory, typography, and composition.',
+    image: 'graphic-design-course',
+    subject: 'Art & Design',
+    videos: [
+      { id: 'gd-intro', title: 'The 7 Elements of Art', youtubeId: 'BDePyEFT1gQ' },
+      { id: 'gd-color-theory', title: 'Color Theory for Beginners', youtubeId: 'L1CK9bE3H_s' },
+      { id: 'gd-typography', title: 'A Brief History of Typography', youtubeId: 'wOgIkxAfJsk' },
+      { id: 'gd-layout', title: 'Layout and Composition', youtubeId: 'a5KYlHNKQB4' },
+    ],
+  },
+  {
+    id: 'the-world-of-creative-writing',
+    title: 'The World of Creative Writing',
+    description: 'Unleash your inner author and learn the basics of storytelling, character development, and plot construction.',
+    image: 'creative-writing-course',
+    subject: 'Humanities',
+    videos: [
+      { id: 'cw-story-structure', title: 'The 3-Act Story Structure', youtubeId: 'H31oE2ru_i0' },
+      { id: 'cw-character', title: 'Creating Compelling Characters', youtubeId: '8A_tbnM6BBI' },
+      { id: 'cw-show-dont-tell', title: 'Show, Don\'t Tell', youtubeId: 'Up1c_L4Qv_4' },
+      { id: 'cw-dialogue', title: 'Writing Effective Dialogue', youtubeId: 'b0124N5aT9M' },
+    ],
+  },
+  {
+    id: 'intro-to-economics',
+    title: 'Introduction to Economics',
+    description: 'Grasp the essential concepts of supply and demand, scarcity, opportunity cost, and market structures.',
+    image: 'economics-course',
+    subject: 'Social Science',
+    videos: [
+      { id: 'econ-intro', title: 'What is Economics?', youtubeId: '3ez10ADR_gM' },
+      { id: 'econ-supply-demand', title: 'Supply and Demand', youtubeId: 'g9aDizJpd_s' },
+      { id: 'econ-macro-micro', title: 'Microeconomics vs. Macroeconomics', youtubeId: 'w8tUIq7Blsg' },
+      { id: 'econ-gdp', title: 'What is GDP?', youtubeId: '29S7FzI7s24' },
+    ],
+  },
+  {
+    id: 'understanding-climate-change',
+    title: 'Understanding Climate Change',
+    description: 'Learn about the science of climate change, its causes, effects, and the solutions being explored worldwide.',
+    image: 'climate-change-course',
+    subject: 'Science',
+    videos: [
+      { id: 'cc-causes', title: 'The Causes of Climate Change', youtubeId: 'G4H1N_yXBiA' },
+      { id: 'cc-effects', title: 'Effects of Climate Change', youtubeId: 'Jk2i3k_rI8Q' },
+      { id: 'cc-solutions', title: 'Solutions to Climate Change', youtubeId: '1uT2snu3-cE' },
+      { id: 'cc-politics', title: 'The Politics of Climate Change', youtubeId: 'v2K7s2pEucM' },
+    ],
+  },
 ];
 
 // Fetches a course and its videos from Firestore
