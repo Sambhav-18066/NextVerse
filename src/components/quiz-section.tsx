@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useFormStatus } from 'react-dom';
@@ -46,7 +47,7 @@ function GenerateButton() {
 
 export function QuizSection({ videoId, summary, nextVideo, courseId, onQuizPassed, currentProgress, isQuizPassed }: QuizSectionProps) {
   const initialState: QuizState = {};
-  const [state, formAction] = useActionState(handleGenerateQuiz.bind(null, summary || ''), initialState);
+  const [state, formAction] = useActionState(handleGenerateQuiz.bind(null, videoId, summary || ''), initialState);
   const { toast } = useToast();
   
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -192,9 +193,11 @@ export function QuizSection({ videoId, summary, nextVideo, courseId, onQuizPasse
                             isTheCorrectAnswer && "bg-green-500/20 text-green-700"
                           )}
                         >
-                          {isSelected ? (
-                             isCorrect ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />
-                          ) : <div className="h-4 w-4" />}
+                          {isTheCorrectAnswer ? (
+                             <CheckCircle className="h-4 w-4 text-green-600" />
+                          ) : (
+                             isSelected ? <XCircle className="h-4 w-4 text-red-600" /> : <div className="h-4 w-4" />
+                          )}
                           <span className={cn(isTheCorrectAnswer && "font-bold")}>{option}</span>
                         </div>
                       );
