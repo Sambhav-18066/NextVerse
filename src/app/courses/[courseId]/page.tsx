@@ -16,12 +16,15 @@ interface CoursePageProps {
 }
 
 export default async function CoursePage({ params, searchParams }: CoursePageProps) {
-  const course = getCourseById(params.courseId);
+  const awaitedParams = await params;
+  const awaitedSearchParams = await searchParams;
+
+  const course = getCourseById(awaitedParams.courseId);
   if (!course) {
     notFound();
   }
 
-  const progress = searchParams.progress ? (searchParams.progress as string).split(',') : [];
+  const progress = awaitedSearchParams.progress ? (awaitedSearchParams.progress as string).split(',') : [];
   
   // The first video is always unlocked.
   let isNextVideoLocked = false;

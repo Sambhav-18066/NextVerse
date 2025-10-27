@@ -13,15 +13,18 @@ interface WatchPageProps {
 }
 
 export default async function WatchPage({ params, searchParams }: WatchPageProps) {
-  const course = getCourseById(params.courseId);
-  const video = getVideoById(params.videoId);
-  const nextVideo = getNextVideo(params.courseId, params.videoId);
+  const awaitedParams = await params;
+  const awaitedSearchParams = await searchParams;
+
+  const course = getCourseById(awaitedParams.courseId);
+  const video = getVideoById(awaitedParams.videoId);
+  const nextVideo = getNextVideo(awaitedParams.courseId, awaitedParams.videoId);
 
   if (!course || !video) {
     notFound();
   }
   
-  const progress = searchParams.progress ? (searchParams.progress as string).split(',') : [];
+  const progress = awaitedSearchParams.progress ? (awaitedSearchParams.progress as string).split(',') : [];
 
   // Check if the video is unlocked
   const videoIndex = course.videos.findIndex(v => v.id === video.id);
