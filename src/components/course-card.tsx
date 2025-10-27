@@ -5,16 +5,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface CourseCardProps {
   course: Course;
+  className?: string;
 }
 
-export function CourseCard({ course }: CourseCardProps) {
+export function CourseCard({ course, className }: CourseCardProps) {
   const placeholder = PlaceHolderImages.find(p => p.id === course.image);
 
   return (
-    <Card className="flex flex-col overflow-hidden transition-transform transform hover:-translate-y-1 hover:shadow-xl duration-300">
+    <Card className={cn("flex flex-col overflow-hidden transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/30 animate-fade-in-up", className)}>
       <CardHeader>
         {placeholder && (
           <div className="aspect-video relative mb-4">

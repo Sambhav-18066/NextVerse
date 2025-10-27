@@ -123,20 +123,20 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-12 text-center">
-        <div className="inline-flex items-center justify-center bg-primary text-primary-foreground p-4 rounded-full mb-4 shadow-lg">
+        <div className="inline-flex items-center justify-center bg-primary text-primary-foreground p-4 rounded-full mb-4 shadow-lg animate-fade-in-up">
           <GraduationCap className="w-12 h-12" />
         </div>
-        <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           Welcome to NextVerseEducation
         </h1>
-        <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+        <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: '200ms' }}>
           Your journey to mastery begins here. Explore our courses or generate a new one with AI.
         </p>
       </header>
       
       <main>
         {process.env.NODE_ENV === 'development' && (
-          <Card className="mb-8 max-w-md mx-auto">
+          <Card className="mb-8 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '300ms' }}>
             <CardHeader>
               <CardTitle>Admin Control</CardTitle>
               <CardDescription>
@@ -152,7 +152,7 @@ export default function Home() {
           </Card>
         )}
 
-        <div className="mb-12 max-w-lg mx-auto">
+        <div className="mb-12 max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: '400ms' }}>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -176,17 +176,17 @@ export default function Home() {
         {!isLoading && Object.keys(coursesByCategory).length > 0 ? (
            Object.entries(coursesByCategory).map(([category, coursesInCategory]) => (
             <div key={category} className="mb-12">
-              <h2 className="font-headline text-3xl font-bold mb-8 text-foreground capitalize">{category}</h2>
+              <h2 className="font-headline text-3xl font-bold mb-8 text-foreground capitalize animate-fade-in-up">{category}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {coursesInCategory.map((course) => (
-                  <CourseCard key={course.id} course={course} />
+                {coursesInCategory.map((course, index) => (
+                  <CourseCard key={course.id} course={course} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }} />
                 ))}
               </div>
             </div>
           ))
         ) : (
           !isLoading && (
-            <Card className="text-center max-w-md mx-auto">
+            <Card className="text-center max-w-md mx-auto animate-fade-in-up">
               <CardHeader>
                 <CardTitle>No Courses Found</CardTitle>
                 <CardDescription>
