@@ -50,14 +50,14 @@ export function WatchPageClient({ course, video, nextVideo, initialProgress }: W
               <TabsTrigger value="3d-model"><BookText className="mr-1 h-4 w-4" />3D Model</TabsTrigger>
             </TabsList>
             <TabsContent value="summary">
-              <SummarySection videoId={video.id} onSummaryGenerated={setSummary} />
+              <SummarySection videoId={video.id} courseId={course.id} onSummaryGenerated={setSummary} />
             </TabsContent>
             <TabsContent value="quiz">
               <QuizSection 
                 videoId={video.id}
+                courseId={course.id}
                 summary={summary}
                 nextVideo={nextVideo}
-                courseId={course.id}
                 onQuizPassed={() => setIsQuizPassed(true)}
                 currentProgress={initialProgress}
                 isQuizPassed={isQuizPassed}

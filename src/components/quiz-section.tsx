@@ -47,7 +47,7 @@ function GenerateButton() {
 
 export function QuizSection({ videoId, summary, nextVideo, courseId, onQuizPassed, currentProgress, isQuizPassed }: QuizSectionProps) {
   const initialState: QuizState = {};
-  const [state, formAction] = useActionState(handleGenerateQuiz.bind(null, videoId, summary || ''), initialState);
+  const [state, formAction] = useActionState(handleGenerateQuiz.bind(null, videoId, courseId, summary || ''), initialState);
   const { toast } = useToast();
   
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);

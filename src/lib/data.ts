@@ -1,5 +1,7 @@
-import type { Course, Video } from './types';
+import type { Course, Video, CourseDocument, VideoDocument } from './types';
+import { getFirebaseAdmin } from './firebase-admin';
 
+// This data is now only used for the one-time migration to Firestore.
 export const courses: Course[] = [
   {
     id: 'quantum-computing',
@@ -94,38 +96,34 @@ export const courses: Course[] = [
   },
 ];
 
-export function getCourseById(id: string): Course | undefined {
-  return courses.find((course) => course.id === id);
-}
+// Fetches a course and its videos from Firestore
+export async function getCourseWithVideos(courseId: string): Promise<{ course: CourseDocument; videos: Video[] } | null> {
+  const { db } = getFirebaseAdmin();
+  const courseRef = db.collection('courses').doc(courseId);
+  const courseDoc = await courseRef.get();
 
-export function getVideoById(id: string): Video | undefined {
-  for (const course of courses) {
-    const video = course.videos.find((v) => v.id === id);
-    if (video) return video;
-  }
-  return undefined;
-}
-
-export function getNextVideo(courseId: string, currentVideoId: string): Video | undefined {
-  const course = getCourseById(courseId);
-  if (!course) return undefined;
-
-  const currentIndex = course.videos.findIndex((v) => v.id === currentVideoId);
-  if (currentIndex === -1 || currentIndex === course.videos.length - 1) {
-    return undefined; // No next video
+  if (!courseDoc.exists) {
+    return null;
   }
 
-  return course.videos[currentIndex + 1];
+  const videosSnapshot = await courseRef.collection('videos').get();
+  const videos = videosSnapshot.docs.map(doc => ({ ...doc.data() as VideoDocument, id: doc.id }));
+
+  return {
+    course: courseDoc.data() as CourseDocument,
+    videos: videos,
+  };
 }
 
-// Function to add a new course to the in-memory array
-export function addCourse(course: Course) {
-  // Prevent duplicates
-  if (!courses.some(c => c.id === course.id)) {
-    const newCourse: Course = {
-        ...course,
-        videos: course.videos.map(video => ({ ...video }))
-    };
-    courses.push(newCourse);
+// Fetches a single video from a course in Firestore
+export async function getVideoFromCourse(courseId: string, videoId: string): Promise<Video | null> {
+  const { db } = getFirebaseAdmin();
+  const videoRef = db.collection('courses').doc(courseId).collection('videos').doc(videoId);
+  const videoDoc = await videoRef.get();
+
+  if (!videoDoc.exists) {
+    return null;
   }
+
+  return { ...videoDoc.data() as VideoDocument, id: videoDoc.id };
 }

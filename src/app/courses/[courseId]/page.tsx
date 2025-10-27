@@ -1,10 +1,11 @@
 import { VideoListItem } from "@/components/video-list-item";
-import { getCourseById } from "@/lib/data";
+import { getCourseWithVideos } from "@/lib/data";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { Course } from "@/lib/types";
 
 interface CoursePageProps {
   params: {
@@ -16,15 +17,20 @@ interface CoursePageProps {
 }
 
 export default async function CoursePage({ params, searchParams }: CoursePageProps) {
-  const awaitedParams = await params;
-  const awaitedSearchParams = await searchParams;
+  const courseData = await getCourseWithVideos(params.courseId);
 
-  const course = getCourseById(awaitedParams.courseId);
-  if (!course) {
+  if (!courseData) {
     notFound();
   }
+  
+  const course: Course = {
+    ...courseData.course,
+    id: params.courseId,
+    videos: courseData.videos,
+  };
 
-  const progress = awaitedSearchParams.progress ? (awaitedSearchParams.progress as string).split(',') : [];
+
+  const progress = searchParams.progress ? (searchParams.progress as string).split(',') : [];
   
   // The first video is always unlocked.
   let isNextVideoLocked = false;

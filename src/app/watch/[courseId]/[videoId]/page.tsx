@@ -1,5 +1,6 @@
 import { WatchPageClient } from "@/components/watch-page-client";
-import { getCourseById, getNextVideo, getVideoById } from "@/lib/data";
+import { getCourseWithVideos, getVideoFromCourse } from "@/lib/data";
+import type { Course } from "@/lib/types";
 import { notFound } from "next/navigation";
 
 interface WatchPageProps {
@@ -13,21 +14,27 @@ interface WatchPageProps {
 }
 
 export default async function WatchPage({ params, searchParams }: WatchPageProps) {
-  const awaitedParams = await params;
-  const awaitedSearchParams = await searchParams;
+  const courseData = await getCourseWithVideos(params.courseId);
+  const video = await getVideoFromCourse(params.courseId, params.videoId);
 
-  const course = getCourseById(awaitedParams.courseId);
-  const video = getVideoById(awaitedParams.videoId);
-  const nextVideo = getNextVideo(awaitedParams.courseId, awaitedParams.videoId);
-
-  if (!course || !video) {
+  if (!courseData || !video) {
     notFound();
   }
+
+  const course: Course = {
+    id: params.courseId,
+    ...courseData.course,
+    videos: courseData.videos,
+  };
+
+  const videoIndex = course.videos.findIndex(v => v.id === video.id);
+  const nextVideo = videoIndex !== -1 && videoIndex < course.videos.length - 1
+    ? course.videos[videoIndex + 1]
+    : undefined;
   
-  const progress = awaitedSearchParams.progress ? (awaitedSearchParams.progress as string).split(',') : [];
+  const progress = searchParams.progress ? (searchParams.progress as string).split(',') : [];
 
   // Check if the video is unlocked
-  const videoIndex = course.videos.findIndex(v => v.id === video.id);
   const isUnlocked = videoIndex === 0 || progress.includes(course.videos[videoIndex - 1]?.id);
 
   if (!isUnlocked) {

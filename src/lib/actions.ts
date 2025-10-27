@@ -5,8 +5,8 @@ import { generateQuizQuestions } from '@/ai/flows/generate-quiz-questions';
 import { generateVideoSummary } from '@/ai/flows/generate-video-summary';
 import { generateCourseFromTopic } from '@/ai/flows/generate-course';
 import { z } from 'zod';
-import { addCourse, getVideoById } from './data';
 import type { Course, QuizQuestion, Video } from './types';
+import { getFirebaseAdmin } from './firebase-admin';
 
 const summarySchema = z.object({
   summary: z.string(),
@@ -46,15 +46,18 @@ export type SummaryState = {
 
 export async function handleGenerateSummary(
   videoId: string,
+  courseId: string,
   prevState: SummaryState,
 ): Promise<SummaryState> {
-  const video = getVideoById(videoId);
-
-  if (!video) {
-    return { error: 'Video not found.', timestamp: Date.now() };
-  }
-
+  const { db } = getFirebaseAdmin();
+  
   try {
+    const videoRef = await db.collection('courses').doc(courseId).collection('videos').doc(videoId).get();
+    if (!videoRef.exists) {
+      return { error: 'Video not found.', timestamp: Date.now() };
+    }
+    const video = videoRef.data() as Video;
+
     const result = await generateVideoSummary({
       videoUrl: `https://www.youtube.com/watch?v=${video.youtubeId}`,
     });
@@ -81,16 +84,12 @@ export type QuizState = {
 
 export async function handleGenerateQuiz(
   videoId: string,
+  courseId: string,
   summary: string,
   prevState: QuizState,
 ): Promise<QuizState> {
   if (!summary) {
     return { error: 'Cannot generate quiz without video summary.', timestamp: Date.now() };
-  }
-
-  const video = getVideoById(videoId);
-  if (!video) {
-    return { error: 'Video not found.', timestamp: Date.now() };
   }
 
   try {
@@ -128,6 +127,7 @@ export async function handleGenerateCourse(
   }
 
   try {
+    const { db } = getFirebaseAdmin();
     const result = await generateCourseFromTopic({ topic });
     const validatedResult = courseSchema.safeParse(result);
 
@@ -136,16 +136,33 @@ export async function handleGenerateCourse(
       return { error: 'The AI returned data in an unexpected format. Please try again.' };
     }
     
+    const newCourseData = validatedResult.data;
+
+    // Save the new course to Firestore
+    const courseRef = db.collection('courses').doc(newCourseData.id);
+    
+    const batch = db.batch();
+    
+    const { videos, ...courseDoc } = newCourseData;
+    batch.set(courseRef, courseDoc);
+
+    const videosCollection = courseRef.collection('videos');
+    videos.forEach(video => {
+      const videoRef = videosCollection.doc(video.id);
+      batch.set(videoRef, video);
+    });
+
+    await batch.commit();
+
+    // Return the full course object for optimistic updates on the client
     const newCourse: Course = {
-      ...validatedResult.data,
-      videos: validatedResult.data.videos.map((video): Video => ({
+      ...newCourseData,
+      videos: newCourseData.videos.map((video): Video => ({
         id: video.id,
         title: video.title,
         youtubeId: video.youtubeId,
       })),
     };
-    
-    addCourse(newCourse); // Add the course to the in-memory array
 
     return { course: newCourse };
 

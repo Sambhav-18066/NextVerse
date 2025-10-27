@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface SummarySectionProps {
   videoId: string;
+  courseId: string;
   onSummaryGenerated: (summary: string) => void;
 }
 
@@ -32,9 +33,9 @@ function SubmitButton() {
   );
 }
 
-export function SummarySection({ videoId, onSummaryGenerated }: SummarySectionProps) {
+export function SummarySection({ videoId, courseId, onSummaryGenerated }: SummarySectionProps) {
   const initialState: SummaryState = {};
-  const [state, formAction] = useActionState(handleGenerateSummary.bind(null, videoId), initialState);
+  const [state, formAction] = useActionState(handleGenerateSummary.bind(null, videoId, courseId), initialState);
   const { toast } = useToast();
 
   useEffect(() => {

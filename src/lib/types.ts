@@ -18,3 +18,7 @@ export interface QuizQuestion {
   options: string[];
   correctAnswerIndex: number;
 }
+
+// Firestore-specific types
+export type CourseDocument = Omit<Course, 'id' | 'videos'>;
+export type VideoDocument = Omit<Video, 'id'>;
