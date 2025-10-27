@@ -13,6 +13,7 @@ import { Label } from './ui/label';
 import { Progress } from './ui/progress';
 import { useRouter } from 'next/navigation';
 import { Badge } from './ui/badge';
+import { cn } from '@/lib/utils';
 
 interface QuizSectionProps {
   videoId: string;
@@ -105,6 +106,14 @@ export function QuizSection({ videoId, summary, nextVideo, courseId, onQuizPasse
     const newProgress = [...currentProgress, videoId];
     router.push(`/watch/${courseId}/${nextVideo.id}?progress=${newProgress.join(',')}`);
   };
+
+  const handleRetry = () => {
+    setQuestions([]);
+    setQuizFinished(false);
+    setCurrentQuestionIndex(0);
+    setSelectedAnswers([]);
+    setScore(0);
+  }
   
   if (isQuizPassed && nextVideo) {
     return (
@@ -139,29 +148,69 @@ export function QuizSection({ videoId, summary, nextVideo, courseId, onQuizPasse
   }
 
   if (quizFinished) {
+    const passed = score >= 75;
     return (
       <Card>
         <CardHeader>
           <CardTitle>Quiz Results</CardTitle>
           <CardDescription>Your score: {score.toFixed(0)}%</CardDescription>
         </CardHeader>
-        <CardContent>
-          {score >= 75 ? (
-            <div className="text-center text-green-600 space-y-4">
+        <CardContent className="space-y-6">
+          {passed ? (
+            <div className="text-center text-green-600 space-y-2">
               <CheckCircle className="h-12 w-12 mx-auto" />
               <p className="font-bold">Congratulations! You passed.</p>
               {nextVideo && <p>You have unlocked the next video.</p>}
             </div>
           ) : (
-            <div className="text-center text-destructive space-y-4">
+            <div className="text-center text-destructive space-y-2">
               <XCircle className="h-12 w-12 mx-auto" />
               <p className="font-bold">Needs Improvement</p>
-              <p>You need a score of 75% or higher to pass. Please try again.</p>
-              <Button onClick={() => setQuestions([])} variant="outline">
-                Generate New Quiz
-              </Button>
+              <p>You need a score of 75% or higher to pass.</p>
             </div>
           )}
+
+          <div className="space-y-4">
+            {questions.map((q, qIndex) => {
+              const selectedAnswerIndex = selectedAnswers[qIndex];
+              const isCorrect = q.correctAnswerIndex === selectedAnswerIndex;
+
+              return (
+                <div key={qIndex} className="p-4 border rounded-lg">
+                  <p className="font-semibold mb-2">{q.question}</p>
+                  <div className="space-y-2">
+                    {q.options.map((option, oIndex) => {
+                      const isSelected = selectedAnswerIndex === oIndex;
+                      const isTheCorrectAnswer = q.correctAnswerIndex === oIndex;
+
+                      return (
+                        <div
+                          key={oIndex}
+                          className={cn(
+                            "flex items-center space-x-2 p-2 rounded-md text-sm",
+                            isSelected && !isCorrect && "bg-destructive/20 text-destructive-foreground",
+                            isTheCorrectAnswer && "bg-green-500/20 text-green-700"
+                          )}
+                        >
+                          {isSelected ? (
+                             isCorrect ? <CheckCircle className="h-4 w-4 text-green-600" /> : <XCircle className="h-4 w-4 text-red-600" />
+                          ) : <div className="h-4 w-4" />}
+                          <span className={cn(isTheCorrectAnswer && "font-bold")}>{option}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {!passed && (
+            <Button onClick={handleRetry} variant="outline" className="w-full">
+              Try Again with a New Quiz
+            </Button>
+          )}
+
         </CardContent>
       </Card>
     );
