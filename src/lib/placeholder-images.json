@@ -11,6 +11,12 @@
       "description": "Futuristic image of an AI brain or network",
       "imageUrl": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTc2MTUwMjkyM3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "artificial intelligence"
+    },
+    {
+      "id": "analog-digital-modulation-course",
+      "description": "Image representing signal waves for modulation",
+      "imageUrl": "https://images.unsplash.com/photo-1614237162098-6357285c5b43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzaWduYWwlMjB3YXZlfGVufDB8fHx8MTc2MTUzMzQ3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "signal wave"
     }
   ]
 }

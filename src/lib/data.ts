@@ -25,6 +25,18 @@ export const courses: Course[] = [
       { id: 'ai-agi', title: 'The Quest for Artificial General Intelligence (AGI)', youtubeId: 's-y_G12yOqM' },
     ],
   },
+  {
+    id: 'analog-digital-modulation',
+    title: 'Analog and Digital Modulation',
+    description: 'An introduction to the fundamental concepts of analog and digital modulation techniques in communication systems.',
+    image: 'analog-digital-modulation-course',
+    videos: [
+      { id: 'adm-intro', title: 'Analog vs. Digital Signals', youtubeId: 'A_sY9-MyX9o' },
+      { id: 'adm-am', title: 'Amplitude Modulation (AM)', youtubeId: 'M3hV_z3g25g' },
+      { id: 'adm-fm-pm', title: 'Frequency & Phase Modulation (FM/PM)', youtubeId: 't5K5Zfd-gwo' },
+      { id: 'adm-pcm', title: 'Pulse Code Modulation (PCM)', youtubeId: 'OaM6gItg6co' },
+    ],
+  },
 ];
 
 export function getCourseById(id: string): Course | undefined {
