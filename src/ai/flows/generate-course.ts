@@ -53,6 +53,7 @@ const prompt = ai.definePrompt({
   5.  An array of exactly four video lessons. Each video should have:
       - A unique, URL-friendly video ID (e.g., "limits-and-continuity").
       - A descriptive title.
+      - A placeholder YouTube ID.
   
   IMPORTANT: For now, for every video, you MUST use the placeholder YouTube ID "iR2O2GPbB0E". For the course image, you MUST use the placeholder ID "future-of-ai-course".
 

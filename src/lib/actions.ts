@@ -130,7 +130,11 @@ export async function handleGenerateCourse(
       return { error: 'The AI returned data in an unexpected format. Please try again.' };
     }
     
-    const newCourse = validatedResult.data;
+    const newCourse: Course = {
+      ...validatedResult.data,
+      videos: validatedResult.data.videos.map(video => ({...video}))
+    };
+
     addCourse(newCourse); // Add the course to the in-memory array
 
     return { course: newCourse };

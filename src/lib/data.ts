@@ -122,6 +122,10 @@ export function getNextVideo(courseId: string, currentVideoId: string): Video | 
 export function addCourse(course: Course) {
   // Prevent duplicates
   if (!courses.some(c => c.id === course.id)) {
-    courses.push(course);
+    const newCourse: Course = {
+        ...course,
+        videos: course.videos.map(video => ({ ...video }))
+    };
+    courses.push(newCourse);
   }
 }
