@@ -4,7 +4,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Course",
       "type": "object",
-      "description": "Represents a course in the EduStream platform.",
+      "description": "Represents a course in the NextVerseEducation platform.",
       "properties": {
         "id": {
           "type": "string",
@@ -310,6 +310,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to support EduStream's educational content and user progress tracking. It prioritizes authorization independence and efficient data retrieval while adhering to the specified design principles. Key collections include `/courses`, `/courses/{courseId}/videos`, `/quizzes`, `/questions`, `/users/{userId}`, and `/admins`. Authorization independence is achieved by relying on path-based ownership for user-specific data and a dedicated `/admins` collection to manage administrative privileges.  The structure enables secure list operations by segregating data based on access control requirements. For instance, course data is generally public, while user-specific data resides under `/users/{userId}`, and only admins can read/write to the /admins collection."
+    "reasoning": "The Firestore structure is designed to support NextVerseEducation's educational content and user progress tracking. It prioritizes authorization independence and efficient data retrieval while adhering to the specified design principles. Key collections include `/courses`, `/courses/{courseId}/videos`, `/quizzes`, `/questions`, `/users/{userId}`, and `/admins`. Authorization independence is achieved by relying on path-based ownership for user-specific data and a dedicated `/admins` collection to manage administrative privileges.  The structure enables secure list operations by segregating data based on access control requirements. For instance, course data is generally public, while user-specific data resides under `/users/{userId}`, and only admins can read/write to the /admins collection."
   }
 }

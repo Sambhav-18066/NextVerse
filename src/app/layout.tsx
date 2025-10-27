@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from "@/firebase";
 
 export const metadata: Metadata = {
-  title: "EduStream",
+  title: "NextVerseEducation",
   description: "Learn with AI-powered video analysis and quizzes.",
 };
 

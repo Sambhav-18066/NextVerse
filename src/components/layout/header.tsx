@@ -8,7 +8,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 text-lg font-bold font-headline text-primary hover:opacity-80 transition-opacity">
             <GraduationCap className="h-6 w-6" />
-            <span>EduStream</span>
+            <span>NextVerseEducation</span>
           </Link>
         </div>
       </div>

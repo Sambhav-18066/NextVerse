@@ -80,7 +80,7 @@ export default function Home() {
           <GraduationCap className="w-12 h-12" />
         </div>
         <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">
-          Welcome to EduStream
+          Welcome to NextVerseEducation
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
           Your journey to mastery begins here. Explore our courses or generate a new one with AI.
