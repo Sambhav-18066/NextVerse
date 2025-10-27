@@ -9,14 +9,14 @@ import { Button } from "@/components/ui/button";
 import { handleGenerateCourse } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFirebase } from "@/firebase";
+import { useFirebase, useMemoFirebase } from "@/firebase";
 import { collection, doc, writeBatch } from "firebase/firestore";
 import { useCollection } from "@/firebase/firestore/use-collection";
 import { courses as initialCourses } from "@/lib/data"; // For migration
 
 export default function Home() {
   const { firestore } = useFirebase();
-  const coursesQuery = useMemo(() => {
+  const coursesQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return collection(firestore, 'courses');
   }, [firestore]);
@@ -169,6 +169,7 @@ export default function Home() {
           <div className="text-center">
             <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
             <p className="mt-2 text-muted-foreground">Loading courses...</p>
+
           </div>
         )}
 
