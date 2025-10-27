@@ -10,6 +10,7 @@ export interface Course {
   description: string;
   image: string;
   videos: Video[];
+  subject: string;
 }
 
 export interface QuizQuestion {

@@ -3,9 +3,10 @@
 
 import { generateQuizQuestions } from '@/ai/flows/generate-quiz-questions';
 import { generateVideoSummary } from '@/ai/flows/generate-video-summary';
+import { generateCourseFromTopic } from '@/ai/flows/generate-course';
 import { z } from 'zod';
 import { getVideoById } from './data';
-import type { QuizQuestion } from './types';
+import type { Course, QuizQuestion } from './types';
 
 const summarySchema = z.object({
   summary: z.string(),
@@ -20,6 +21,22 @@ const quizSchema = z.object({
     })
   ),
 });
+
+const courseSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  subject: z.string(),
+  image: z.string(),
+  videos: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      youtubeId: z.string(),
+    })
+  ),
+});
+
 
 export type SummaryState = {
   summary?: string;
@@ -87,5 +104,36 @@ export async function handleGenerateQuiz(
   } catch (error) {
     console.error('Error generating quiz:', error);
     return { error: 'An error occurred while generating the quiz.', timestamp: Date.now() };
+  }
+}
+
+
+export type CourseGenerationState = {
+  course?: Course;
+  error?: string;
+  timestamp?: number;
+}
+
+export async function handleGenerateCourse(
+  topic: string,
+): Promise<CourseGenerationState> {
+  if (!topic) {
+    return { error: 'Please provide a topic to generate a course.' };
+  }
+
+  try {
+    const result = await generateCourseFromTopic({ topic });
+    const validatedResult = courseSchema.safeParse(result);
+
+    if (!validatedResult.success) {
+      console.error('AI course validation error:', validatedResult.error);
+      return { error: 'The AI returned data in an unexpected format. Please try again.' };
+    }
+
+    return { course: validatedResult.data };
+
+  } catch (error) {
+    console.error("Error generating course:", error);
+    return { error: 'An unexpected error occurred while generating the course.' };
   }
 }

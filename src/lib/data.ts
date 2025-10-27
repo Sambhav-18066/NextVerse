@@ -6,6 +6,7 @@ export const courses: Course[] = [
     title: 'Quantum Computing Explained',
     description: 'Dive into the weird and wonderful world of quantum computing. Learn the basics of qubits, superposition, and entanglement.',
     image: 'quantum-computing-course',
+    subject: 'Engineering',
     videos: [
       { id: 'qc-intro', title: 'Introduction to Quantum Computing', youtubeId: 'F_Riqjdh2oM' },
       { id: 'qc-qubits', title: 'Qubits: The Building Blocks', youtubeId: 'g_IaVepNDT4' },
@@ -18,6 +19,7 @@ export const courses: Course[] = [
     title: 'The Future of Artificial Intelligence',
     description: 'Explore the cutting edge of AI, from large language models to generative art and beyond. What does the future hold?',
     image: 'future-of-ai-course',
+    subject: 'Engineering',
     videos: [
       { id: 'ai-history', title: 'A Brief History of AI', youtubeId: '3gy31n4C3u8' },
       { id: 'ai-llms', title: 'Large Language Models (LLMs)', youtubeId: 'iR2O2GPbB0E' },
@@ -30,6 +32,7 @@ export const courses: Course[] = [
     title: 'Analog and Digital Modulation',
     description: 'An introduction to the fundamental concepts of analog and digital modulation techniques in communication systems.',
     image: 'analog-digital-modulation-course',
+    subject: 'Engineering',
     videos: [
       { id: 'adm-intro', title: 'Analog vs. Digital Signals', youtubeId: 'A_sY9-MyX9o' },
       { id: 'adm-am', title: 'Amplitude Modulation (AM)', youtubeId: 'M3hV_z3g25g' },
@@ -42,6 +45,7 @@ export const courses: Course[] = [
     title: 'Civil Engineering: Structural Analysis',
     description: 'Learn the fundamentals of structural analysis, including forces, moments, and how to analyze simple trusses and beams.',
     image: 'civil-engineering-course',
+    subject: 'Engineering',
     videos: [
       { id: 'sa-intro', title: 'Introduction to Statics', youtubeId: 'zjbT-4W2a-4' },
       { id: 'sa-trusses', title: 'Method of Joints for Truss Analysis', youtubeId: 'Yv4iK9tY1yM' },
@@ -54,6 +58,7 @@ export const courses: Course[] = [
     title: 'Agriculture: Introduction to Soil Science',
     description: 'Explore the composition, properties, and importance of soil in agriculture and ecosystem health.',
     image: 'soil-science-course',
+    subject: 'Agriculture',
     videos: [
       { id: 'ss-intro', title: 'What is Soil?', youtubeId: 'o-47cCy9xNc' },
       { id: 'ss-texture', title: 'Soil Texture and Structure', youtubeId: 'ihj2NQjo3lg' },
@@ -66,6 +71,7 @@ export const courses: Course[] = [
     title: 'Health Science: Human Anatomy Fundamentals',
     description: 'A beginner-friendly overview of the major organ systems of the human body and their functions.',
     image: 'human-anatomy-course',
+    subject: 'Health Science',
     videos: [
       { id: 'ha-intro', title: 'Introduction to the Human Body', youtubeId: 'gEUu-A2wfSE' },
       { id: 'ha-skeletal', title: 'The Skeletal System', youtubeId: 'rDGqkMHf4bQ' },
