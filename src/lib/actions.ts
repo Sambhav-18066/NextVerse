@@ -5,7 +5,7 @@ import { generateQuizQuestions } from '@/ai/flows/generate-quiz-questions';
 import { generateVideoSummary } from '@/ai/flows/generate-video-summary';
 import { generateCourseFromTopic } from '@/ai/flows/generate-course';
 import { z } from 'zod';
-import { getVideoById } from './data';
+import { addCourse, getVideoById } from './data';
 import type { Course, QuizQuestion } from './types';
 
 const summarySchema = z.object({
@@ -129,8 +129,11 @@ export async function handleGenerateCourse(
       console.error('AI course validation error:', validatedResult.error);
       return { error: 'The AI returned data in an unexpected format. Please try again.' };
     }
+    
+    const newCourse = validatedResult.data;
+    addCourse(newCourse); // Add the course to the in-memory array
 
-    return { course: validatedResult.data };
+    return { course: newCourse };
 
   } catch (error) {
     console.error("Error generating course:", error);

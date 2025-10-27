@@ -104,3 +104,11 @@ export function getNextVideo(courseId: string, currentVideoId: string): Video | 
 
   return course.videos[currentIndex + 1];
 }
+
+// Function to add a new course to the in-memory array
+export function addCourse(course: Course) {
+  // Prevent duplicates
+  if (!courses.some(c => c.id === course.id)) {
+    courses.push(course);
+  }
+}
