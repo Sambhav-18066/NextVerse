@@ -15,8 +15,26 @@
     {
       "id": "analog-digital-modulation-course",
       "description": "Image representing signal waves for modulation",
-      "imageUrl": "https://images.unsplash.com/photo-1614237162098-6357285c5b43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzaWduYWwlMjB3YXZlfGVufDB8fHx8MTc2MTUzMzQ3N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1543364195-077a16c30ff3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzaWduYWwlMjB3YXZlfGVufDB8fHx8MTc2MTYwNjY4NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "signal wave"
+    },
+    {
+      "id": "civil-engineering-course",
+      "description": "Image of a bridge or structure representing structural analysis",
+      "imageUrl": "https://images.unsplash.com/photo-1541696495338-3e4745a552a4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHJ1Y3R1cmFsJTIwYW5hbHlzaXN8ZW58MHx8fHwxNzYxNjA2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "structural analysis"
+    },
+    {
+      "id": "soil-science-course",
+      "description": "Image showing different layers of soil",
+      "imageUrl": "https://images.unsplash.com/photo-1601831818841-a5d5362c4bf5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzb2lsJTIwc2NpZW5jZXxlbnwwfHx8fDE3NjE2MDcwMTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "soil science"
+    },
+    {
+      "id": "human-anatomy-course",
+      "description": "Illustration of human anatomy",
+      "imageUrl": "https://images.unsplash.com/photo-1580281657692-081829370399?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxodW1hbiUyMGFuYXRvbXl8ZW58MHx8fHwxNzYxNjA3MDM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "human anatomy"
     }
   ]
 }

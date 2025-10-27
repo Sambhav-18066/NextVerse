@@ -37,6 +37,42 @@ export const courses: Course[] = [
       { id: 'adm-pcm', title: 'Pulse Code Modulation (PCM)', youtubeId: 'OaM6gItg6co' },
     ],
   },
+  {
+    id: 'structural-analysis',
+    title: 'Civil Engineering: Structural Analysis',
+    description: 'Learn the fundamentals of structural analysis, including forces, moments, and how to analyze simple trusses and beams.',
+    image: 'civil-engineering-course',
+    videos: [
+      { id: 'sa-intro', title: 'Introduction to Statics', youtubeId: 'zjbT-4W2a-4' },
+      { id: 'sa-trusses', title: 'Method of Joints for Truss Analysis', youtubeId: 'Yv4iK9tY1yM' },
+      { id: 'sa-beams', title: 'Shear and Moment Diagrams', youtubeId: 'fP15pG24-I4' },
+      { id: 'sa-deflection', title: 'Beam Deflection', youtubeId: 'Ibi5vPr1lRw' },
+    ],
+  },
+  {
+    id: 'soil-science',
+    title: 'Agriculture: Introduction to Soil Science',
+    description: 'Explore the composition, properties, and importance of soil in agriculture and ecosystem health.',
+    image: 'soil-science-course',
+    videos: [
+      { id: 'ss-intro', title: 'What is Soil?', youtubeId: 'o-47cCy9xNc' },
+      { id: 'ss-texture', title: 'Soil Texture and Structure', youtubeId: 'ihj2NQjo3lg' },
+      { id: 'ss-nutrients', title: 'Soil Nutrients and Fertility', youtubeId: 'vBi_j3Vp-yE' },
+      { id: 'ss-conservation', title: 'Soil Conservation', youtubeId: 'w221_a2AI5s' },
+    ],
+  },
+  {
+    id: 'human-anatomy',
+    title: 'Health Science: Human Anatomy Fundamentals',
+    description: 'A beginner-friendly overview of the major organ systems of the human body and their functions.',
+    image: 'human-anatomy-course',
+    videos: [
+      { id: 'ha-intro', title: 'Introduction to the Human Body', youtubeId: 'gEUu-A2wfSE' },
+      { id: 'ha-skeletal', title: 'The Skeletal System', youtubeId: 'rDGqkMHf4bQ' },
+      { id: 'ha-muscular', title: 'The Muscular System', youtubeId: 'Vask8qjKx_I' },
+      { id: 'ha-nervous', title: 'The Nervous System', youtubeId: '71pCilo8k4M' },
+    ],
+  },
 ];
 
 export function getCourseById(id: string): Course | undefined {
