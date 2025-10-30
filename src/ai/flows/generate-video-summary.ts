@@ -5,7 +5,7 @@
  *
  * It includes:
  * - generateVideoSummary: A function to generate a video summary.
- * - GenerateVideoSummaryInput: The input type for the generateVideoSummary function.
+ * - GenerateVideoSummaryInput: The input type for the generateVideosummary function.
  * - GenerateVideoSummaryOutput: The output type for the generateVideoSummary function.
  */
 
@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateVideoSummaryOutputSchema},
   prompt: `You are an AI expert in video summarization. Analyze the video from the URL provided and summarize its key points. Focus on extracting the core concepts and main ideas presented.
 
-Video to analyze: {{media url=videoUrl}}`,
+Video to analyze: {{media url=videoUrl source='youtube'}}`,
 });
 
 const generateVideoSummaryFlow = ai.defineFlow(
