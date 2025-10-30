@@ -23,13 +23,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useFirebase } from "@/firebase";
+import { useFirebase, useDoc, useMemoFirebase } from "@/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { doc } from "firebase/firestore";
+
+interface UserProfile {
+  name: string;
+  // include other profile fields if necessary
+}
 
 export default function UserPage() {
-  const { auth, user } = useFirebase();
+  const { auth, user, firestore } = useFirebase();
   const router = useRouter();
+
+  const userDocRef = useMemoFirebase(() => {
+    if (firestore && user) {
+      return doc(firestore, "users", user.uid);
+    }
+    return null;
+  }, [firestore, user]);
+
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc<UserProfile>(userDocRef);
 
   const handleScroll = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -46,12 +61,14 @@ export default function UserPage() {
     }
   };
 
+  const displayName = isProfileLoading ? "Loading..." : userProfile?.name || "User";
+
   return (
     <div className="bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35] text-white">
       <header className="sticky top-0 z-20 p-4 bg-transparent backdrop-blur-sm">
         <div className="container mx-auto flex justify-between items-center">
           <div className="text-2xl font-bold">
-            Welcome, {user?.displayName || "User"}!
+            Welcome, {displayName}!
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
