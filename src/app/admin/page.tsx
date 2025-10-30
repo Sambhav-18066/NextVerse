@@ -33,7 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useFirebase, useCollection, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
 import { uploadCourseContent, getDashboardStats } from "@/lib/actions";
@@ -48,9 +48,9 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState({ userCount: 0, courseCount: 0 });
   const [statsLoading, setStatsLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchStats() {
-      setStatsLoading(true);
+  const fetchStats = useCallback(async () => {
+    setStatsLoading(true);
+    try {
       const result = await getDashboardStats();
       if (result.success) {
         setStats({ 
@@ -64,10 +64,22 @@ export default function AdminDashboard() {
           description: result.message
         })
       }
+    } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Failed to load stats",
+          description: error.message || "An unexpected error occurred."
+        })
+    } finally {
       setStatsLoading(false);
     }
-    fetchStats();
   }, [toast]);
+
+  useEffect(() => {
+    if (user) {
+        fetchStats();
+    }
+  }, [user, fetchStats]);
   
   const coursesCollectionRef = useMemoFirebase(() =>
     firestore && user ? collection(firestore, "courses") : null,
@@ -100,6 +112,7 @@ export default function AdminDashboard() {
             title: "Upload Successful",
             description: result.message,
           });
+          fetchStats(); // Re-fetch stats after successful upload
         } else {
           throw new Error(result.message);
         }
@@ -319,5 +332,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
-  
