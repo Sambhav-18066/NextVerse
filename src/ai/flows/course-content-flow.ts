@@ -31,11 +31,26 @@ export async function generateCourseContent(input: GenerateCourseContentInput): 
   return generateCourseContentFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'courseContentPrompt',
-  input: { schema: GenerateCourseContentInputSchema },
-  output: { schema: GenerateCourseContentOutputSchema },
-  prompt: `You are an expert instructional designer. Based on the provided video title and transcript, your task is to generate a concise summary and a multiple-choice quiz.
+const generateCourseContentFlow = ai.defineFlow(
+  {
+    name: 'generateCourseContentFlow',
+    inputSchema: GenerateCourseContentInputSchema,
+    outputSchema: GenerateCourseContentOutputSchema,
+  },
+  async input => {
+    const modelsToTry = [
+      'googleai/gemini-2.5-flash',
+      'googleai/gemini-1.5-flash-latest',
+      'googleai/gemini-pro',
+    ];
+
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`Attempting to generate content with model: ${modelName}`);
+        const llm = ai.getModel(modelName);
+        const { output } = await ai.generate({
+          model: llm,
+          prompt: `You are an expert instructional designer. Based on the provided video title and transcript, your task is to generate a concise summary and a multiple-choice quiz.
 
 The summary should be 2-3 paragraphs long, capturing the key concepts and main points from the transcript.
 
@@ -44,21 +59,21 @@ The quiz must contain exactly 4 multiple-choice questions. Each question must ha
 Video Title: {{{title}}}
 Transcript:
 {{{transcript}}}`,
-});
+          input,
+          output: {
+            schema: GenerateCourseContentOutputSchema,
+          }
+        });
 
-const generateCourseContentFlow = ai.defineFlow(
-  {
-    name: 'generateCourseContentFlow',
-    inputSchema: GenerateCourseContentInputSchema,
-    outputSchema: GenerateCourseContentOutputSchema,
-  },
-  async input => {
-    const { output } = await prompt(input);
-    if (!output) {
-      throw new Error('Failed to generate course content from AI model.');
+        if (output) {
+          console.log(`Successfully generated content with model: ${modelName}`);
+          return output;
+        }
+      } catch (error) {
+        console.warn(`Model ${modelName} failed. Trying next model. Error:`, error);
+      }
     }
-    return output;
+
+    throw new Error('All AI models failed to generate content. Please try again later.');
   }
 );
-
-    
