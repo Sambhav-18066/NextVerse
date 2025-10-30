@@ -84,3 +84,24 @@ export async function uploadCourseContent(fileBuffer: ArrayBuffer) {
     return { success: false, message: error.message || 'An unknown error occurred.' };
   }
 }
+
+export async function getDashboardStats() {
+  const { db, auth } = getFirebaseAdmin();
+  if (!db || !auth) {
+    throw new Error('Firebase Admin SDK not initialized');
+  }
+  try {
+    const usersPromise = auth.listUsers();
+    const coursesPromise = db.collection('courses').count().get();
+
+    const [userRecords, coursesSnapshot] = await Promise.all([usersPromise, coursesPromise]);
+
+    const userCount = userRecords.users.length;
+    const courseCount = coursesSnapshot.data().count;
+
+    return { success: true, userCount, courseCount };
+  } catch (error: any) {
+    console.error('Error fetching dashboard stats:', error);
+    return { success: false, message: error.message || 'An unknown error occurred.' };
+  }
+}

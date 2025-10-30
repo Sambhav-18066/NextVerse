@@ -33,10 +33,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFirebase, useCollection, useMemoFirebase } from "@/firebase";
 import { collection } from "firebase/firestore";
-import { uploadCourseContent } from "@/lib/actions";
+import { uploadCourseContent, getDashboardStats } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
 
@@ -45,12 +45,29 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [stats, setStats] = useState({ userCount: 0, courseCount: 0 });
+  const [statsLoading, setStatsLoading] = useState(true);
 
-  const usersCollectionRef = useMemoFirebase(() => 
-    firestore ? collection(firestore, "users") : null,
-    [firestore]
-  );
-  const { data: users, isLoading: usersLoading } = useCollection(usersCollectionRef);
+  useEffect(() => {
+    async function fetchStats() {
+      setStatsLoading(true);
+      const result = await getDashboardStats();
+      if (result.success) {
+        setStats({ 
+          userCount: result.userCount ?? 0, 
+          courseCount: result.courseCount ?? 0 
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Failed to load stats",
+          description: result.message
+        })
+      }
+      setStatsLoading(false);
+    }
+    fetchStats();
+  }, [toast]);
   
   const coursesCollectionRef = useMemoFirebase(() =>
     firestore ? collection(firestore, "courses") : null,
@@ -142,7 +159,7 @@ export default function AdminDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{usersLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : users?.length ?? 0}</div>
+                <div className="text-2xl font-bold">{statsLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : stats.userCount}</div>
                 <p className="text-xs text-muted-foreground">
                   Registered on the platform
                 </p>
@@ -156,7 +173,7 @@ export default function AdminDashboard() {
                 <ListVideo className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{coursesLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : courses?.length ?? 0}</div>
+                <div className="text-2xl font-bold">{statsLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : stats.courseCount}</div>
                 <p className="text-xs text-muted-foreground">
                   Available for enrollment
                 </p>
