@@ -6,7 +6,7 @@ import { generateVideoSummary } from '@/ai/flows/generate-video-summary';
 import { generateCourseFromTopic } from '@/ai/flows/generate-course';
 import { z } from 'zod';
 import type { Course, QuizQuestion, Video } from './types';
-import { getFirebaseAdmin } from './firebase-admin';
+import { courses } from './data';
 
 const summarySchema = z.object({
   summary: z.string(),
@@ -49,14 +49,13 @@ export async function handleGenerateSummary(
   courseId: string,
   prevState: SummaryState,
 ): Promise<SummaryState> {
-  const { db } = getFirebaseAdmin();
-  
   try {
-    const videoRef = await db.collection('courses').doc(courseId).collection('videos').doc(videoId).get();
-    if (!videoRef.exists) {
+    const course = courses.find(c => c.id === courseId);
+    const video = course?.videos.find(v => v.id === videoId);
+
+    if (!video) {
       return { error: 'Video not found.', timestamp: Date.now() };
     }
-    const video = videoRef.data() as Video;
 
     const result = await generateVideoSummary({
       videoUrl: `https://www.youtube.com/watch?v=${video.youtubeId}`,
@@ -127,7 +126,6 @@ export async function handleGenerateCourse(
   }
 
   try {
-    const { db } = getFirebaseAdmin();
     const result = await generateCourseFromTopic({ topic });
     const validatedResult = courseSchema.safeParse(result);
 
@@ -138,23 +136,7 @@ export async function handleGenerateCourse(
     
     const newCourseData = validatedResult.data;
 
-    // Save the new course to Firestore
-    const courseRef = db.collection('courses').doc(newCourseData.id);
-    
-    const batch = db.batch();
-    
-    const { videos, ...courseDoc } = newCourseData;
-    batch.set(courseRef, courseDoc);
-
-    const videosCollection = courseRef.collection('videos');
-    videos.forEach(video => {
-      const videoRef = videosCollection.doc(video.id);
-      batch.set(videoRef, video);
-    });
-
-    await batch.commit();
-
-    // Return the full course object for optimistic updates on the client
+    // This is now a local operation, we'll return the course and the client will add it to its state
     const newCourse: Course = {
       ...newCourseData,
       videos: newCourseData.videos.map((video): Video => ({

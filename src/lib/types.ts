@@ -19,6 +19,6 @@ export interface QuizQuestion {
   correctAnswerIndex: number;
 }
 
-// Firestore-specific types
+// These types are kept for potential future use but are not currently used with local data.
 export type CourseDocument = Omit<Course, 'id' | 'videos'>;
 export type VideoDocument = Omit<Video, 'id'>;

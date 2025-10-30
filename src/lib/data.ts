@@ -1,7 +1,6 @@
 import type { Course, Video, CourseDocument, VideoDocument } from './types';
-import { getFirebaseAdmin } from './firebase-admin';
 
-// This data is now only used for the one-time migration to Firestore.
+// This data is now the primary source of truth for the application.
 export const courses: Course[] = [
   {
     id: 'quantum-computing',
@@ -102,7 +101,7 @@ export const courses: Course[] = [
     subject: 'Humanities',
     videos: [
       { id: 'phil-what-is-it', title: 'What is Philosophy?', youtubeId: '1A_CAkYt3GY' },
-      { id: 'phil-plato', title: 'Plato\'s Allegory of the Cave', youtubeId: '1RWOpQXTltA' },
+      { id: 'phil-plato', title: "Plato's Allegory of the Cave", youtubeId: '1RWOpQXTltA' },
       { id: 'phil-descartes', title: 'Descartes\' "I Think, Therefore I Am"', youtubeId: '0A6_u-eL-8g' },
       { id: 'phil-ethics', title: 'Introduction to Ethics', youtubeId: '3_YS-iG8gA' },
     ],
@@ -161,34 +160,28 @@ export const courses: Course[] = [
   },
 ];
 
-// Fetches a course and its videos from Firestore
+// Fetches a course and its videos from the local array
 export async function getCourseWithVideos(courseId: string): Promise<{ course: CourseDocument; videos: Video[] } | null> {
-  const { db } = getFirebaseAdmin();
-  const courseRef = db.collection('courses').doc(courseId);
-  const courseDoc = await courseRef.get();
+  const course = courses.find(c => c.id === courseId);
 
-  if (!courseDoc.exists) {
+  if (!course) {
     return null;
   }
 
-  const videosSnapshot = await courseRef.collection('videos').get();
-  const videos = videosSnapshot.docs.map(doc => ({ ...doc.data() as VideoDocument, id: doc.id }));
+  const { id, videos, ...courseData } = course;
 
   return {
-    course: courseDoc.data() as CourseDocument,
+    course: courseData,
     videos: videos,
   };
 }
 
-// Fetches a single video from a course in Firestore
+// Fetches a single video from a course in the local array
 export async function getVideoFromCourse(courseId: string, videoId: string): Promise<Video | null> {
-  const { db } = getFirebaseAdmin();
-  const videoRef = db.collection('courses').doc(courseId).collection('videos').doc(videoId);
-  const videoDoc = await videoRef.get();
-
-  if (!videoDoc.exists) {
+  const course = courses.find(c => c.id === courseId);
+  if (!course) {
     return null;
   }
-
-  return { ...videoDoc.data() as VideoDocument, id: videoDoc.id };
+  const video = course.videos.find(v => v.id === videoId);
+  return video || null;
 }

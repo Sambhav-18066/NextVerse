@@ -1,7 +1,7 @@
 'use client';
 
 import { CourseCard } from "@/components/course-card";
-import { GraduationCap, Loader2, Sparkles, Search, Upload } from "lucide-react";
+import { GraduationCap, Loader2, Sparkles, Search } from "lucide-react";
 import { useState, useMemo } from "react";
 import type { Course } from "@/lib/types";
 import { Input } from "@/components/ui/input";
@@ -9,22 +9,12 @@ import { Button } from "@/components/ui/button";
 import { handleGenerateCourse } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFirebase, useMemoFirebase } from "@/firebase";
-import { collection, doc, writeBatch } from "firebase/firestore";
-import { useCollection } from "@/firebase/firestore/use-collection";
-import { courses as initialCourses } from "@/lib/data"; // For migration
+import { courses as initialCourses } from "@/lib/data";
 
 export default function Home() {
-  const { firestore } = useFirebase();
-  const coursesQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
-    return collection(firestore, 'courses');
-  }, [firestore]);
-  const { data: courses, isLoading } = useCollection<Course>(coursesQuery);
-
+  const [courses, setCourses] = useState<Course[]>(initialCourses);
   const [searchQuery, setSearchQuery] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isMigrating, setIsMigrating] = useState(false);
   const { toast } = useToast();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +22,6 @@ export default function Home() {
   };
 
   const filteredCourses = useMemo(() => {
-    if (!courses) return [];
     if (!searchQuery) {
       return courses;
     }
@@ -65,7 +54,7 @@ export default function Home() {
           description: result.error,
         });
       } else if (result.course) {
-        // The useCollection hook will automatically update the UI
+        setCourses(prevCourses => [result.course!, ...prevCourses]);
         setSearchQuery(""); // Clear search to show all courses including the new one
         toast({
           title: "Course Generated!",
@@ -83,43 +72,6 @@ export default function Home() {
     }
   };
 
-  const migrateData = async () => {
-    if (!firestore) return;
-    setIsMigrating(true);
-    try {
-      const batch = writeBatch(firestore);
-      const coursesCollection = collection(firestore, "courses");
-
-      for (const course of initialCourses) {
-        const courseRef = doc(coursesCollection, course.id);
-        const { videos, ...courseData } = course;
-        batch.set(courseRef, courseData);
-
-        const videosCollection = collection(courseRef, "videos");
-        for (const video of videos) {
-          const videoRef = doc(videosCollection, video.id);
-          batch.set(videoRef, video);
-        }
-      }
-
-      await batch.commit();
-      toast({
-        title: "Migration Complete!",
-        description: `${initialCourses.length} courses have been added to the database.`,
-      });
-    } catch (error: any) {
-      console.error("Migration failed:", error);
-      toast({
-        variant: "destructive",
-        title: "Migration Failed",
-        description: error.message || "Could not migrate course data.",
-      });
-    } finally {
-      setIsMigrating(false);
-    }
-  };
-
-
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-12 text-center">
@@ -135,21 +87,6 @@ export default function Home() {
       </header>
       
       <main>
-        <Card className="mb-8 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-          <CardHeader>
-            <CardTitle>Admin Control</CardTitle>
-            <CardDescription>
-              Use this to populate your Firestore database with the initial set of courses.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={migrateData} disabled={isMigrating} className="w-full">
-              {isMigrating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
-              {isMigrating ? 'Migrating...' : `Migrate ${initialCourses.length} Courses to Firestore`}
-            </Button>
-          </CardContent>
-        </Card>
-
         <div className="mb-12 max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: '400ms' }}>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -163,15 +100,7 @@ export default function Home() {
           </div>
         </div>
 
-        {isLoading && (
-          <div className="text-center">
-            <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-            <p className="mt-2 text-muted-foreground">Loading courses...</p>
-
-          </div>
-        )}
-
-        {!isLoading && Object.keys(coursesByCategory).length > 0 ? (
+        {Object.keys(coursesByCategory).length > 0 ? (
            Object.entries(coursesByCategory).map(([category, coursesInCategory]) => (
             <div key={category} className="mb-12">
               <h2 className="font-headline text-3xl font-bold mb-8 text-foreground capitalize animate-fade-in-up">{category}</h2>
@@ -183,31 +112,29 @@ export default function Home() {
             </div>
           ))
         ) : (
-          !isLoading && (
-            <Card className="text-center max-w-md mx-auto animate-fade-in-up">
-              <CardHeader>
-                <CardTitle>No Courses Found</CardTitle>
-                <CardDescription>
-                  We couldn't find any courses matching your search. Would you like our AI to create one for you on the topic of "{searchQuery}"?
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button onClick={generateCourse} disabled={isGenerating || !searchQuery} className="w-full">
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating Course...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Generate with AI
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          )
+          <Card className="text-center max-w-md mx-auto animate-fade-in-up">
+            <CardHeader>
+              <CardTitle>No Courses Found</CardTitle>
+              <CardDescription>
+                We couldn't find any courses matching your search. Would you like our AI to create one for you on the topic of "{searchQuery}"?
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={generateCourse} disabled={isGenerating || !searchQuery} className="w-full">
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating Course...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Generate with AI
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
         )}
       </main>
     </div>
