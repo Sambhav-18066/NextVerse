@@ -20,7 +20,7 @@ export default function Home() {
           style={{ animationDelay: "0.4s" }}
         >
           <CardHeader>
-            <CardTitle>Welcome to NextVerseEducation</CardTitle>
+            {/* The title was removed for a cleaner look. */}
           </CardHeader>
         </Card>
         <div
