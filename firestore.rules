@@ -1,48 +1,59 @@
 /**
- * @file Firestore Security Rules
- * @core_philosophy This ruleset is in prototyping mode. It prioritizes strict authorization
- *  while relaxing data validation to allow for rapid schema iteration. All write
- *  operations are locked down to prevent unauthorized modifications, but minimal
- *  data validation is performed.
- * @data_structure
- *  - /courses/{courseId}: Stores course metadata.
- *  - /courses/{courseId}/videos/{videoId}: Stores video metadata for a specific course.
- * @key_security_decisions
- *  - All write operations require authentication.
- *  - No user listing is allowed.
- *  - Public read access is enabled for courses and videos.
+ * @fileoverview Firestore Security Rules for EduStream User Profiles
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model, where each user can only access their own profile data.
+ *
+ * Data Structure:
+ * All user profiles are stored under the `/users/{userId}` path, where `{userId}` corresponds to the Firebase Authentication UID.
+ *
+ * Key Security Decisions:
+ * - Users can only create, read, update, and delete their own profile.
+ * - User listing is disallowed to protect user privacy.
+ * - The `id` field within the `/users/{userId}` document is immutable to prevent unauthorized ownership changes.
+ *
+ * Denormalization for Authorization:
+ * The `userId` is encoded in the document path `/users/{userId}`, and the rules enforce that the `id` field within the document must match this `userId`.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Allows anyone to read courses, but restricts write access to authenticated users.
-     * @path /courses/{courseId}
-     * @allow (get, list)
-     * @deny (create, update, delete) - No unauthenticated access.
-     * @principle Allows public reads but requires authentication for any modification.
+     * @description Secures user profile data, ensuring only the authenticated user can manage their own profile.
+     * @path /users/{userId}
+     * @allow (create) User 'user_abc' can create their profile if request.auth.uid == 'user_abc' and the 'id' field in the data also equals 'user_abc'.
+     * @allow (get) User 'user_abc' can read their profile if request.auth.uid == 'user_abc'.
+     * @allow (update) User 'user_abc' can update their profile if request.auth.uid == 'user_abc'.
+     * @allow (delete) User 'user_abc' can delete their profile if request.auth.uid == 'user_abc'.
+     * @deny (create) User 'user_xyz' cannot create a profile under the path /users/user_abc.
+     * @deny (get) User 'user_xyz' cannot read the profile of user 'user_abc'.
+     * @principle Enforces document ownership for all operations.
      */
-    match /courses/{courseId} {
-      allow get, list: if true;
-      allow create, update, delete: if isSignedIn();
-    }
-
-    /**
-     * @description Allows anyone to read videos, but restricts write access to authenticated users.
-     * @path /courses/{courseId}/videos/{videoId}
-     * @allow (get, list)
-     * @deny (create, update, delete) - No unauthenticated access.
-     * @principle Allows public reads but requires authentication for any modification.
-     */
-    match /courses/{courseId}/videos/{videoId} {
-      allow get, list: if true;
-      allow create, update, delete: if isSignedIn();
+    match /users/{userId} {
+      // isOwner enforces that request.auth.uid matches the userId in the path
+      allow get: if isSignedIn() && isOwner(userId);
+      allow list: if false;
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isSignedIn() && isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isSignedIn() && isExistingOwner(userId);
     }
 
     // ---- Helper functions ----
+
+    // Checks if the user is signed in.
     function isSignedIn() {
       return request.auth != null;
+    }
+
+    // Checks if the request is made by the owner of the user profile.
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Combine ownership and resource existence checks
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
     }
   }
 }

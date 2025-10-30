@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user profile in the EduStream application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "name": {
+          "type": "string",
+          "description": "User's full name."
+        },
+        "dateJoined": {
+          "type": "string",
+          "description": "Date when the user joined EduStream.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "name",
+        "dateJoined"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores user profile information. The 'userId' parameter corresponds to the Firebase Authentication UID, ensuring that each user's profile is stored separately and securely. This structure enables path-based ownership, where only the authenticated user can access their own profile data.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Authentication UID of the user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to store user profile information upon account creation. The primary goal is to ensure a simple and secure way to manage user data. This design prioritizes storing user profiles in a dedicated collection for easy access and management. There are no complex access patterns or collaborative data requirements outlined in the user's request."
+  }
+}
