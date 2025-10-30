@@ -1,5 +1,6 @@
 import { GraduationCap } from "lucide-react";
 import Link from "next/link";
+import { ModeToggle } from "../mode-toggle";
 
 export function Header() {
   return (
@@ -10,6 +11,7 @@ export function Header() {
             <GraduationCap className="h-6 w-6" />
             <span>NextVerseEducation</span>
           </Link>
+          <ModeToggle />
         </div>
       </div>
     </header>
