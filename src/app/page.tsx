@@ -1,14 +1,11 @@
-import StarsBackground from "@/components/stars-background";
+"use client";
+
+import { StarsBackground } from "@/components/stars-background";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-hidden">
+    <main className="relative min-h-screen overflow-hidden bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35]">
       <StarsBackground />
-      <div className="container mx-auto flex h-full items-center justify-center p-4">
-        <h1 className="text-4xl font-bold text-center animate-fade-in-up">
-          Your Blank Canvas
-        </h1>
-      </div>
     </main>
   );
 }

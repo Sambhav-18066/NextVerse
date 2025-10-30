@@ -1,32 +1,31 @@
-'use client';
+"use client";
 
-import React from 'react';
+import { useState, useEffect } from 'react';
 
-const StarsBackground = () => {
-  const stars = 150; // Number of stars
+export function StarsBackground() {
+  const [stars, setStars] = useState<JSX.Element[]>([]);
+  const numStars = 300;
 
-  return (
-    <div className="fixed inset-0 z-[-1] overflow-hidden opacity-50">
-      <div className="stars">
-        {Array.from({ length: stars }).map((_, i) => (
-          <div
-            key={`star-${i}`}
-            className="star"
-            style={
-              {
-                '--star-tail-length': `${Math.random() * 2 + 0.5}em`,
-                '--top-offset': `${Math.random() * 100}vh`,
-                '--fall-duration': `${Math.random() * 6 + 6}s`,
-                '--fall-delay': `${Math.random() * 10}s`,
-                // We add a random start position on the X axis to spread the stars
-                left: `${Math.random() * 100}vw`,
-              } as React.CSSProperties
-            }
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
+  useEffect(() => {
+    const generateStars = () => {
+      return Array.from({ length: numStars }).map((_, i) => (
+        <div
+          key={i}
+          className="star absolute rounded-full bg-white"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: `${Math.random() * 2 + 1}px`,
+            height: `${Math.random() * 2 + 1}px`,
+            animationDuration: `${Math.random() * 5 + 3}s`,
+            animationDelay: `${Math.random() * 3}s`,
+            opacity: Math.random() * 0.5 + 0.2,
+          }}
+        ></div>
+      ));
+    };
+    setStars(generateStars());
+  }, []);
 
-export default StarsBackground;
+  return <div className="absolute inset-0 opacity-60">{stars}</div>;
+}
