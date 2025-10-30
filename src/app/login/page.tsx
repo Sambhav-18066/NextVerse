@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,11 +20,18 @@ import { initiateEmailSignIn } from "@/firebase/non-blocking-login";
 import type { AuthError } from "firebase/auth";
 
 export default function LoginPage() {
-  const { auth } = useFirebase();
+  const { auth, user, isUserLoading } = useFirebase();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      router.push("/user");
+    }
+  }, [user, isUserLoading, router]);
+
 
   const handleLogin = () => {
     setError(null);
