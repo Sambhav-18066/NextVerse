@@ -32,13 +32,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export default function AdminDashboard() {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       console.log("File selected:", file.name);
+    }
+  };
+
+  const handleUploadContent = () => {
+    if (selectedFile) {
+      console.log("Uploading file:", selectedFile.name);
       // Logic to parse and upload the excel sheet will be added here
+    } else {
+      console.log("No file selected for upload.");
     }
   };
 
@@ -52,7 +64,20 @@ export default function AdminDashboard() {
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "CourseTemplate");
-    XLSX.writeFile(wb, "CourseTemplate.xlsx");
+    
+    // Use write to create a binary string, then create a Blob
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([wbout], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create a temporary link to trigger the download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'CourseTemplate.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -155,8 +180,7 @@ export default function AdminDashboard() {
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <FileUp className="w-10 h-10 mb-3 text-gray-400" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                        <span className="font-semibold">Click to upload</span> or drag and
-                        drop
+                        {selectedFile ? selectedFile.name : <><span className="font-semibold">Click to upload</span> or drag and drop</>}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                         XLSX, XLS (MAX. 5MB)
@@ -166,7 +190,7 @@ export default function AdminDashboard() {
                     </label>
                 </div>
                 <div className="flex w-full gap-2 mt-4">
-                  <Button className="flex-1">Upload Content</Button>
+                  <Button className="flex-1" onClick={handleUploadContent}>Upload Content</Button>
                   <Button variant="outline" className="flex-1" onClick={handleDownloadDemo}>
                     <Download className="mr-2 h-4 w-4" />
                     Download Demo
