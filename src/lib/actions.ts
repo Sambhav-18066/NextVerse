@@ -93,13 +93,26 @@ export async function getDashboardStats() {
   try {
     const usersPromise = auth.listUsers();
     const coursesPromise = db.collection('courses').count().get();
+    const topCoursesPromise = db.collection('courses')
+      .orderBy('enrollmentCount', 'desc')
+      .limit(5)
+      .get();
 
-    const [userRecords, coursesSnapshot] = await Promise.all([usersPromise, coursesPromise]);
+    const [userRecords, coursesSnapshot, topCoursesSnapshot] = await Promise.all([
+        usersPromise, 
+        coursesPromise,
+        topCoursesPromise
+    ]);
 
     const userCount = userRecords.users.length;
     const courseCount = coursesSnapshot.data().count;
+    
+    const topCourses = topCoursesSnapshot.docs.map(doc => ({
+      name: doc.data().title,
+      users: doc.data().enrollmentCount || 0,
+    }));
 
-    return { success: true, userCount, courseCount };
+    return { success: true, userCount, courseCount, topCourses };
   } catch (error: any) {
     console.error('Error fetching dashboard stats:', error);
     return { success: false, message: error.message || 'An unknown error occurred.' };

@@ -34,18 +34,22 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect, useCallback } from "react";
-import { useFirebase, useCollection, useMemoFirebase } from "@/firebase";
-import { collection } from "firebase/firestore";
+import { useFirebase } from "@/firebase";
 import { uploadCourseContent, getDashboardStats } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
 
+interface TopCourse {
+  name: string;
+  users: number;
+}
 
 export default function AdminDashboard() {
-  const { firestore, user } = useFirebase();
+  const { user } = useFirebase();
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [stats, setStats] = useState({ userCount: 0, courseCount: 0 });
+  const [topCourses, setTopCourses] = useState<TopCourse[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
 
   const fetchStats = useCallback(async () => {
@@ -57,6 +61,7 @@ export default function AdminDashboard() {
           userCount: result.userCount ?? 0, 
           courseCount: result.courseCount ?? 0 
         });
+        setTopCourses(result.topCourses ?? []);
       } else {
         toast({
           variant: "destructive",
@@ -80,19 +85,6 @@ export default function AdminDashboard() {
         fetchStats();
     }
   }, [user, fetchStats]);
-  
-  const coursesCollectionRef = useMemoFirebase(() =>
-    firestore && user ? collection(firestore, "courses") : null,
-    [firestore, user]
-  );
-  const { data: courses, isLoading: coursesLoading } = useCollection(coursesCollectionRef);
-
-  const topCourses = courses
-    ?.slice()
-    .sort((a, b) => (b.enrollmentCount || 0) - (a.enrollmentCount || 0))
-    .slice(0, 5)
-    .map(course => ({ name: course.title, users: course.enrollmentCount || 0 }));
-
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -294,7 +286,7 @@ export default function AdminDashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                 {coursesLoading ? (
+                 {statsLoading ? (
                     <div className="flex justify-center items-center h-[350px]">
                       <Loader2 className="h-8 w-8 animate-spin" />
                     </div>
