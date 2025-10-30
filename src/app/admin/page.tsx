@@ -41,7 +41,7 @@ import { useToast } from "@/hooks/use-toast";
 
 
 export default function AdminDashboard() {
-  const { firestore } = useFirebase();
+  const { firestore, user } = useFirebase();
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -70,8 +70,8 @@ export default function AdminDashboard() {
   }, [toast]);
   
   const coursesCollectionRef = useMemoFirebase(() =>
-    firestore ? collection(firestore, "courses") : null,
-    [firestore]
+    firestore && user ? collection(firestore, "courses") : null,
+    [firestore, user]
   );
   const { data: courses, isLoading: coursesLoading } = useCollection(coursesCollectionRef);
 
@@ -319,3 +319,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+  
