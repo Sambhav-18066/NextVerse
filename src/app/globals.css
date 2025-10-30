@@ -24,3 +24,22 @@
 .star {
   animation: twinkle linear infinite;
 }
+
+@keyframes fall {
+  0% {
+    transform: translateX(0) translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-300px) translateY(300px);
+    opacity: 0;
+  }
+}
+
+.shooting-star {
+  position: absolute;
+  background: linear-gradient(-45deg, #fff, rgba(255, 255, 255, 0));
+  border-radius: 999px;
+  filter: drop-shadow(0 0 6px #fff);
+  animation: fall linear infinite;
+}
