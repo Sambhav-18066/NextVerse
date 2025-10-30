@@ -129,7 +129,7 @@ export default function CourseDetailPage() {
                       </TabsList>
                       {!generatedContent[currentTopic.id] && (
                         <Button onClick={handleGenerateContent} disabled={isGenerating}>
-                          {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                          {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" /> : null}
                           Generate Content
                         </Button>
                       )}
@@ -201,7 +201,7 @@ export default function CourseDetailPage() {
                       className="rounded-full"
                       aria-label={isLocked ? "Locked" : `Play ${topic.title}`}
                     >
-                      {isLocked ? <Lock className="h-6 w-6" /> : <PlayCircle className="h-8 w-8" />}
+                      {isLocked ? <Lock className="h-6 w-6 text-white" /> : <PlayCircle className="h-8 w-8 text-white" />}
                     </Button>
                   </div>
                 </Card>
@@ -213,4 +213,3 @@ export default function CourseDetailPage() {
     </div>
   );
 }
-
