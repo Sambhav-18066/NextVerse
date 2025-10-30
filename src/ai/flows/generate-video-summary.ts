@@ -30,9 +30,9 @@ const prompt = ai.definePrompt({
   name: 'generateVideoSummaryPrompt',
   input: {schema: GenerateVideoSummaryInputSchema},
   output: {schema: GenerateVideoSummaryOutputSchema},
-  prompt: `You are an AI expert in video summarization. Analyze the video from the URL provided and summarize its key points. Focus on extracting the core concepts and main ideas presented.
+  prompt: `You are an AI expert in video summarization. Analyze the YouTube video from the URL provided and summarize its key points. Focus on extracting the core concepts and main ideas presented.
 
-Video to analyze: {{media url=videoUrl source='youtube'}}`,
+Video to analyze: {{media url=videoUrl}}`,
 });
 
 const generateVideoSummaryFlow = ai.defineFlow(
