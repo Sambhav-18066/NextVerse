@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import React from "react";
 
 const Star = ({ className }: { className?: string }) => (
   <svg
@@ -18,13 +19,16 @@ const Star = ({ className }: { className?: string }) => (
   </svg>
 );
 
+interface ShimmerButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  className?: string;
+}
+
 export function ShimmerButton({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+  ...props
+}: ShimmerButtonProps) {
   return (
     <button
       className={cn(
@@ -33,6 +37,7 @@ export function ShimmerButton({
         "animate-glow",
         className
       )}
+      {...props}
     >
       <span className="absolute inset-[-1000%] animate-shimmer bg-[linear-gradient(110deg,transparent_20%,rgba(255,255,255,0.4)_50%,transparent_80%)]" />
       <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950/80 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-all hover:bg-slate-950">

@@ -50,9 +50,7 @@ export default function Home() {
               className="animate-fade-in-up transition-transform duration-300 ease-in-out active:scale-95"
               style={{ animationDelay: "0.8s" }}
             >
-              <button onClick={handleScroll}>
-                <ShimmerButton>Explore</ShimmerButton>
-              </button>
+              <ShimmerButton onClick={handleScroll}>Explore</ShimmerButton>
             </div>
           </div>
         </div>
