@@ -65,12 +65,16 @@ const generateCourseContentFlow = ai.defineFlow(
         console.log(`Attempting to generate content with model: ${modelName}`);
         const llm = ai.getModel(modelName);
 
+        // Correctly render the prompt and structure the generate call.
+        const renderedPrompt = await prompt.render({ input });
+        
         const { output } = await ai.generate({
           model: llm,
-          prompt: await prompt.render({ input }),
+          prompt: renderedPrompt.prompt,
           output: {
             schema: GenerateCourseContentOutputSchema,
-          }
+          },
+          config: renderedPrompt.config
         });
 
         if (output) {
