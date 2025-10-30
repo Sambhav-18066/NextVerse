@@ -19,7 +19,7 @@ import { useFirebase } from "@/firebase/provider";
 import { initiateEmailSignUp } from "@/firebase/non-blocking-login";
 import { setDocumentNonBlocking } from "@/firebase/non-blocking-updates";
 import { doc } from "firebase/firestore";
-import type { AuthError } from "firebase/auth";
+import type { AuthError, User } from "firebase/auth";
 
 export default function SignupPage() {
   const { auth, firestore } = useFirebase();
@@ -57,7 +57,7 @@ export default function SignupPage() {
       console.error("Sign-up error:", authError);
     };
 
-    const handleSuccess = (user: any) => {
+    const handleSuccess = (user: User) => {
        if (user && firestore) {
         const userRef = doc(firestore, "users", user.uid);
         const userData = {

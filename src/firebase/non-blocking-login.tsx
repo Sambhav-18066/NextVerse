@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   User,
+  UserCredential,
   // Assume getAuth and app are initialized elsewhere
 } from 'firebase/auth';
 
@@ -29,7 +30,7 @@ export function initiateEmailSignUp(
 ): void {
   // CRITICAL: Call createUserWithEmailAndPassword directly. Do NOT use 'await createUserWithEmailAndPassword(...)'.
   createUserWithEmailAndPassword(authInstance, email, password)
-    .then((userCredential) => {
+    .then((userCredential: UserCredential) => {
       if (onSuccess) {
         onSuccess(userCredential.user);
       }
