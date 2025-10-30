@@ -31,7 +31,7 @@ export async function generateCourseContent(input: GenerateCourseContentInput): 
   return generateCourseContentFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const generateCourseContentPrompt = ai.definePrompt({
   name: 'generateCourseContentPrompt',
   input: { schema: GenerateCourseContentInputSchema },
   output: { schema: GenerateCourseContentOutputSchema },
@@ -44,10 +44,7 @@ The quiz must contain exactly 4 multiple-choice questions. Each question must ha
 Video Title: {{{title}}}
 Transcript:
 {{{transcript}}}`,
-  // Use a reliable and powerful model
-  model: 'googleai/gemini-1.5-flash-latest', 
 });
-
 
 const generateCourseContentFlow = ai.defineFlow(
   {
@@ -57,11 +54,9 @@ const generateCourseContentFlow = ai.defineFlow(
   },
   async input => {
     try {
-      console.log('Generating content with gemini-1.5-flash-latest...');
+      console.log('Generating content with default model...');
       
-      // Directly call the defined prompt function with the input.
-      // This is the correct way to execute a prompt defined with ai.definePrompt.
-      const { output } = await prompt(input);
+      const { output } = await generateCourseContentPrompt(input);
       
       if (!output) {
         throw new Error('AI model returned no output.');
