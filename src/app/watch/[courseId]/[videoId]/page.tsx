@@ -14,15 +14,16 @@ interface WatchPageProps {
 }
 
 export default async function WatchPage({ params, searchParams }: WatchPageProps) {
-  const courseData = await getCourseWithVideos(params.courseId);
-  const video = await getVideoFromCourse(params.courseId, params.videoId);
+  const { courseId, videoId } = params;
+  const courseData = await getCourseWithVideos(courseId);
+  const video = await getVideoFromCourse(courseId, videoId);
 
   if (!courseData || !video) {
     notFound();
   }
 
   const course: Course = {
-    id: params.courseId,
+    id: courseId,
     ...courseData.course,
     videos: courseData.videos,
   };
