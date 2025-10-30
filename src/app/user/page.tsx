@@ -58,7 +58,7 @@ export default function UserPage() {
                 <UserCircle className="h-8 w-8" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuContent className="w-56 border-white/20 bg-white/10 text-white backdrop-blur-sm" align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>My Learnings</DropdownMenuItem>
