@@ -31,6 +31,22 @@ export async function generateCourseContent(input: GenerateCourseContentInput): 
   return generateCourseContentFlow(input);
 }
 
+const prompt = ai.definePrompt({
+  name: 'generateCourseContentPrompt',
+  input: { schema: GenerateCourseContentInputSchema },
+  output: { schema: GenerateCourseContentOutputSchema },
+  prompt: `You are an expert instructional designer. Based on the provided video title and transcript, your task is to generate a concise summary and a multiple-choice quiz.
+
+The summary should be 2-3 paragraphs long, capturing the key concepts and main points from the transcript.
+
+The quiz must contain exactly 4 multiple-choice questions. Each question must have exactly 4 options, one of which is the correct answer. The questions should test understanding of the core concepts presented in the transcript.
+
+Video Title: {{{title}}}
+Transcript:
+{{{transcript}}}`,
+});
+
+
 const generateCourseContentFlow = ai.defineFlow(
   {
     name: 'generateCourseContentFlow',
@@ -48,17 +64,10 @@ const generateCourseContentFlow = ai.defineFlow(
       try {
         console.log(`Attempting to generate content with model: ${modelName}`);
         const llm = ai.getModel(modelName);
+
         const { output } = await ai.generate({
           model: llm,
-          prompt: `You are an expert instructional designer. Based on the provided video title and transcript, your task is to generate a concise summary and a multiple-choice quiz.
-
-The summary should be 2-3 paragraphs long, capturing the key concepts and main points from the transcript.
-
-The quiz must contain exactly 4 multiple-choice questions. Each question must have exactly 4 options, one of which is the correct answer. The questions should test understanding of the core concepts presented in the transcript.
-
-Video Title: ${input.title}
-Transcript:
-${input.transcript}`,
+          prompt: await prompt.render({ input }),
           output: {
             schema: GenerateCourseContentOutputSchema,
           }
