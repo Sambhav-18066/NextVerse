@@ -17,7 +17,8 @@ interface CoursePageProps {
 }
 
 export default async function CoursePage({ params, searchParams }: CoursePageProps) {
-  const courseData = await getCourseWithVideos(params.courseId);
+  const { courseId } = params;
+  const courseData = await getCourseWithVideos(courseId);
 
   if (!courseData) {
     notFound();
@@ -25,7 +26,7 @@ export default async function CoursePage({ params, searchParams }: CoursePagePro
   
   const course: Course = {
     ...courseData.course,
-    id: params.courseId,
+    id: courseId,
     videos: courseData.videos,
   };
 
