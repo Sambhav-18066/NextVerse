@@ -152,7 +152,7 @@ export default function AdminDashboard() {
                 </div>
                 <Button className="mt-4 w-full">Upload Content</Button>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Format: "Topic Name", "Youtube Video Link", "Short Description"
+                  Format: "Main Topic", "SubTopic", "Youtube Video Link", "Short Description"
                 </p>
               </CardContent>
             </Card>
