@@ -17,6 +17,7 @@ import { useFirebase } from "@/firebase/provider";
 import { initiateEmailSignUp } from "@/firebase/non-blocking-login";
 import { setDocumentNonBlocking } from "@/firebase/non-blocking-updates";
 import { doc } from "firebase/firestore";
+import type { AuthError } from "firebase/auth";
 
 export default function SignupPage() {
   const { auth, firestore } = useFirebase();
@@ -24,35 +25,42 @@ export default function SignupPage() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignUp = async () => {
     if (!auth || !firestore) return;
+    setError(null); // Reset error state on new attempt
 
-    try {
-      // This part creates the user in Firebase Auth.
-      // We are not awaiting it directly, onAuthStateChanged will handle the redirect.
-      initiateEmailSignUp(auth, email, password);
+    const handleAuthError = (authError: AuthError) => {
+      if (authError.code === "auth/email-already-in-use") {
+        setError("This email is already in use. Please try another email or log in.");
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+      console.error("Sign-up error:", authError);
+    };
 
-      // We listen for the user to be created to get their UID.
-      const unsubscribe = auth.onAuthStateChanged(user => {
-        if (user) {
-          // Once we have the user, we can save their details to Firestore.
-          const userRef = doc(firestore, "users", user.uid);
-          setDocumentNonBlocking(userRef, {
-            id: user.uid,
-            email: user.email,
-            name: `${firstName} ${lastName}`,
-            dateJoined: new Date().toISOString(),
-          }, { merge: true });
+    // This part creates the user in Firebase Auth.
+    // It now includes an error handling callback.
+    initiateEmailSignUp(auth, email, password, handleAuthError);
 
-          // Unsubscribe to avoid running this multiple times.
-          unsubscribe();
-        }
-      });
+    // We listen for the user to be created to get their UID.
+    // This part only runs if the user is created successfully.
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user && user.email === email) { // Ensure we're acting on the correct user
+        // Once we have the user, we can save their details to Firestore.
+        const userRef = doc(firestore, "users", user.uid);
+        setDocumentNonBlocking(userRef, {
+          id: user.uid,
+          email: user.email,
+          name: `${firstName} ${lastName}`,
+          dateJoined: new Date().toISOString(),
+        }, { merge: true });
 
-    } catch (error) {
-      console.error("Error signing up:", error);
-    }
+        // Unsubscribe to avoid running this multiple times.
+        unsubscribe();
+      }
+    });
   };
 
   return (
@@ -142,6 +150,7 @@ export default function SignupPage() {
               >
                 Create account
               </Button>
+              {error && <p className="mt-2 text-sm text-red-400 text-center">{error}</p>}
               <Button
                 variant="outline"
                 className="w-full bg-transparent hover:bg-white/10 animate-fade-in-up"
