@@ -2,6 +2,7 @@
 
 import { StarsBackground } from "@/components/stars-background";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -15,12 +16,14 @@ export default function Home() {
           NextVerseEducation
         </h1>
         <div
-          className="mt-8 animate-fade-in-up"
+          className="mt-8 animate-fade-in-up transition-transform duration-300 ease-in-out active:scale-95"
           style={{ animationDelay: "0.6s" }}
         >
-          <ShimmerButton>
-            Get Started
-          </ShimmerButton>
+          <Link href="/login">
+            <ShimmerButton>
+              Get Started
+            </ShimmerButton>
+          </Link>
         </div>
       </div>
     </main>
