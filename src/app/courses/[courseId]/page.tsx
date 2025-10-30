@@ -7,7 +7,7 @@ import { PlayCircle, Lock, Loader2 } from 'lucide-react';
 import { StarsBackground } from '@/components/stars-background';
 import { VideoPlayer } from '@/components/ui/video-player';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
@@ -202,5 +202,3 @@ export default function CourseDetailPage() {
     </div>
   );
 }
-
-    
