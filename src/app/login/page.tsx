@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,8 +14,47 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { StarsBackground } from "@/components/stars-background";
+import { useFirebase } from "@/firebase/provider";
+import { initiateEmailSignIn } from "@/firebase/non-blocking-login";
+import type { AuthError } from "firebase/auth";
 
 export default function LoginPage() {
+  const { auth } = useFirebase();
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLogin = () => {
+    setError(null);
+    // Special check for admin credentials
+    if (email === "ADMIN" && password === "ADMIN") {
+      router.push("/admin");
+      return;
+    }
+
+    if (!auth) {
+      setError("Authentication service is not available.");
+      return;
+    }
+
+    const handleAuthError = (authError: AuthError) => {
+      switch (authError.code) {
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          setError("Invalid email or password.");
+          break;
+        default:
+          setError("An unexpected error occurred. Please try again.");
+          break;
+      }
+      console.error("Login error:", authError);
+    };
+
+    initiateEmailSignIn(auth, email, password, handleAuthError);
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35]">
       <StarsBackground />
@@ -35,6 +76,8 @@ export default function LoginPage() {
                   placeholder="m@example.com"
                   required
                   className="bg-black/20 text-white placeholder:text-gray-400"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="grid gap-2">
@@ -52,11 +95,14 @@ export default function LoginPage() {
                   type="password"
                   required
                   className="bg-black/20 text-white"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button onClick={handleLogin} className="w-full">
                 Login
               </Button>
+              {error && <p className="mt-2 text-sm text-red-400 text-center">{error}</p>}
               <Button variant="outline" className="w-full bg-transparent hover:bg-white/10">
                 Login with Google
               </Button>
