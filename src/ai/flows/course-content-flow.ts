@@ -44,6 +44,8 @@ The quiz must contain exactly 4 multiple-choice questions. Each question must ha
 Video Title: {{{title}}}
 Transcript:
 {{{transcript}}}`,
+  // Use a reliable and powerful model
+  model: 'googleai/gemini-1.5-flash-latest', 
 });
 
 
@@ -54,38 +56,24 @@ const generateCourseContentFlow = ai.defineFlow(
     outputSchema: GenerateCourseContentOutputSchema,
   },
   async input => {
-    const modelsToTry = [
-      'googleai/gemini-2.5-flash',
-      'googleai/gemini-1.5-flash-latest',
-      'googleai/gemini-pro',
-    ];
-
-    for (const modelName of modelsToTry) {
-      try {
-        console.log(`Attempting to generate content with model: ${modelName}`);
-        const llm = ai.getModel(modelName);
-
-        // Correctly render the prompt and structure the generate call.
-        const renderedPrompt = await prompt.render({ input });
-        
-        const { output } = await ai.generate({
-          model: llm,
-          prompt: renderedPrompt.prompt,
-          output: {
-            schema: GenerateCourseContentOutputSchema,
-          },
-          config: renderedPrompt.config
-        });
-
-        if (output) {
-          console.log(`Successfully generated content with model: ${modelName}`);
-          return output;
-        }
-      } catch (error) {
-        console.warn(`Model ${modelName} failed. Trying next model. Error:`, error);
+    try {
+      console.log('Generating content with gemini-1.5-flash-latest...');
+      
+      // Directly call the defined prompt function with the input.
+      // This is the correct way to execute a prompt defined with ai.definePrompt.
+      const { output } = await prompt(input);
+      
+      if (!output) {
+        throw new Error('AI model returned no output.');
       }
-    }
+      
+      console.log('Successfully generated content.');
+      return output;
 
-    throw new Error('All AI models failed to generate content. Please try again later.');
+    } catch (error) {
+      console.error('An error occurred during content generation:', error);
+      // Re-throw a user-friendly error to be caught by the client.
+      throw new Error('Failed to generate course content from the AI model. Please try again later.');
+    }
   }
 );
