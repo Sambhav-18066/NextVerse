@@ -2,6 +2,7 @@
 
 import { StarsBackground } from "@/components/stars-background";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 export default function Home() {
   return (
@@ -22,6 +23,14 @@ export default function Home() {
             <CardTitle>Welcome to NextVerseEducation</CardTitle>
           </CardHeader>
         </Card>
+        <div
+          className="mt-8 animate-fade-in-up"
+          style={{ animationDelay: "0.6s" }}
+        >
+          <ShimmerButton>
+            Get Started
+          </ShimmerButton>
+        </div>
       </div>
     </main>
   );

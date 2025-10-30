@@ -104,12 +104,30 @@ export default {
             opacity: '1',
             transform: 'translateY(0)'
           }
-        }
+        },
+        glow: {
+          '0%, 100%': {
+            boxShadow: '0 0 5px #a37cf0, 0 0 10px #a37cf0, 0 0 20px #a37cf0',
+          },
+          '50%': {
+            boxShadow: '0 0 20px #a37cf0, 0 0 30px #a37cf0, 0 0 40px #a37cf0',
+          },
+        },
+        shimmer: {
+          '0%': {
+            backgroundPosition: '-200% 0',
+          },
+          '100%': {
+            backgroundPosition: '200% 0',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+        glow: 'glow 4s ease-in-out infinite',
+        shimmer: 'shimmer 3s linear infinite',
       },
     },
   },
