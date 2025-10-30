@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,8 +13,48 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { StarsBackground } from "@/components/stars-background";
+import { useFirebase } from "@/firebase/provider";
+import { initiateEmailSignUp } from "@/firebase/non-blocking-login";
+import { setDocumentNonBlocking } from "@/firebase/non-blocking-updates";
+import { doc } from "firebase/firestore";
 
 export default function SignupPage() {
+  const { auth, firestore } = useFirebase();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUp = async () => {
+    if (!auth || !firestore) return;
+
+    try {
+      // This part creates the user in Firebase Auth.
+      // We are not awaiting it directly, onAuthStateChanged will handle the redirect.
+      initiateEmailSignUp(auth, email, password);
+
+      // We listen for the user to be created to get their UID.
+      const unsubscribe = auth.onAuthStateChanged(user => {
+        if (user) {
+          // Once we have the user, we can save their details to Firestore.
+          const userRef = doc(firestore, "users", user.uid);
+          setDocumentNonBlocking(userRef, {
+            id: user.uid,
+            email: user.email,
+            name: `${firstName} ${lastName}`,
+            dateJoined: new Date().toISOString(),
+          }, { merge: true });
+
+          // Unsubscribe to avoid running this multiple times.
+          unsubscribe();
+        }
+      });
+
+    } catch (error) {
+      console.error("Error signing up:", error);
+    }
+  };
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35]">
       <StarsBackground />
@@ -49,6 +90,8 @@ export default function SignupPage() {
                     placeholder="Max"
                     required
                     className="bg-black/20 text-white placeholder:text-gray-400"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -58,6 +101,8 @@ export default function SignupPage() {
                     placeholder="Robinson"
                     required
                     className="bg-black/20 text-white placeholder:text-gray-400"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
               </div>
@@ -72,6 +117,8 @@ export default function SignupPage() {
                   placeholder="m@example.com"
                   required
                   className="bg-black/20 text-white placeholder:text-gray-400"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div
@@ -83,12 +130,15 @@ export default function SignupPage() {
                   id="password"
                   type="password"
                   className="bg-black/20 text-white"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <Button
                 type="submit"
                 className="w-full animate-fade-in-up"
                 style={{ animationDelay: "0.8s" }}
+                onClick={handleSignUp}
               >
                 Create account
               </Button>
