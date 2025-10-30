@@ -1,6 +1,7 @@
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, User } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "../mode-toggle";
+import { Button } from "../ui/button";
 
 export function Header() {
   return (
@@ -11,7 +12,13 @@ export function Header() {
             <GraduationCap className="h-6 w-6" />
             <span>NextVerseEducation</span>
           </Link>
-          <ModeToggle />
+          <div className="flex items-center gap-2">
+            <ModeToggle />
+            <Button variant="outline" size="icon" className="rounded-full">
+              <User className="h-5 w-5" />
+              <span className="sr-only">User Profile</span>
+            </Button>
+          </div>
         </div>
       </div>
     </header>
