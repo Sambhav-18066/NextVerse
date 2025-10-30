@@ -18,14 +18,25 @@ const courseData: { [key: string]: any } = {
   'Quantum Physics Explained': {
     title: 'Quantum Physics Explained',
     subTopics: [
-      { id: '1', title: 'Introduction to Quantum States', videoId: 'q-i-p13HwGg', duration: '10:32', transcript: 'A quantum state is a mathematical entity that provides a probability distribution for the outcomes of each possible measurement on a system.' },
+      { id: '1', title: 'Introduction to Quantum States', videoId: '6-rA-v_oW2A', duration: '10:32', transcript: 'A quantum state is a mathematical entity that provides a probability distribution for the outcomes of each possible measurement on a system.' },
       { id: '2', title: 'Wave-Particle Duality', videoId: 'M7lc1UVf-VE', duration: '12:45', transcript: 'Wave-particle duality is the concept in quantum mechanics that every particle or quantum entity may be described as either a particle or a wave.' },
       { id: '3', title: 'The Uncertainty Principle', videoId: '7G3-g-2-gGU', duration: '8:15', transcript: 'The uncertainty principle, also known as Heisenberg\'s uncertainty principle, is any of a variety of mathematical inequalities asserting a fundamental limit to the precision with which the values for certain pairs of physical quantities of a particle, such as position and momentum, can be predicted from initial conditions.' },
       { id: '4', title: 'Quantum Entanglement', videoId: 'Zz_0hCZoA_c', duration: '14:20', transcript: 'Quantum entanglement is a physical phenomenon that occurs when a pair or group of particles is generated in such a way that the quantum state of each particle of the pair or group cannot be described independently of the state of the others, even when the particles are separated by a large distance.' },
       { id: '5', title: 'Quantum Tunneling', videoId: 'cTodS8hkSDg', duration: '9:58', transcript: 'Quantum tunnelling or tunneling is the quantum mechanical phenomenon where a wavefunction can propagate through a potential barrier.' },
     ],
   },
-  // Add other courses here...
+  'Electronics Fundamentals': {
+    title: 'Electronics Fundamentals',
+    subTopics: [
+      { id: '1', title: 'Modulation', videoId: 'mHvV_Tv8HDQ', duration: '4:33', transcript: 'Modulation is the process of varying one or more properties of a periodic waveform, called the carrier signal, with a modulating signal that typically contains information to be transmitted.' },
+      { id: '2', title: 'Multiplexing', videoId: 'WXof7bg_Zys', duration: '8:10', transcript: 'In telecommunications and computer networking, multiplexing is a method by which multiple analog or digital signals are combined into one signal over a shared medium.' },
+      { id: '3', title: 'RFID', videoId: 'Ukfpq71BoMo', duration: '5:54', transcript: 'Radio-frequency identification uses electromagnetic fields to automatically identify and track tags attached to objects.' },
+      { id: '4', title: 'Capacitor', videoId: 'X4EUwTwZ110', duration: '6:35', transcript: 'A capacitor is a device that stores electrical energy in an electric field. It is a passive electronic component with two terminals.' },
+      { id: '5', title: 'Transistor', videoId: 'YtM_MnM0qT4', duration: '7:01', transcript: 'A transistor is a semiconductor device used to amplify or switch electronic signals and electrical power. It is composed of semiconductor material usually with at least three terminals for connection to an external circuit.' },
+      { id: '6', title: 'Rectifier', videoId: 'n9FxHA7pl6o', duration: '6:02', transcript: 'A rectifier is an electrical device that converts alternating current (AC), which periodically reverses direction, to direct current (DC), which flows in only one direction.' },
+      { id: '7', title: 'Diode', videoId: 'Fwj_d3uO5g8', duration: '6:53', transcript: 'A diode is a two-terminal electronic component that conducts current primarily in one direction; it has low resistance in one direction, and high resistance in the other.' }
+    ]
+  },
 };
 
 export default function CourseDetailPage() {
@@ -34,7 +45,7 @@ export default function CourseDetailPage() {
   const course = courseData[courseId] || { title: courseId, subTopics: [] };
 
   const [currentTopicId, setCurrentTopicId] = useState<string | null>(course.subTopics[0]?.id || null);
-  const [unlockedTopics, setUnlockedTopics] = useState<Set<string>>(new Set(['1']));
+  const [unlockedTopics, setUnlockedTopics] = useState<Set<string>>(new Set([course.subTopics[0]?.id]));
 
   const [generatedContent, setGeneratedContent] = useState<{ [key: string]: GenerateCourseContentOutput }>({});
   const [isGenerating, setIsGenerating] = useState(false);

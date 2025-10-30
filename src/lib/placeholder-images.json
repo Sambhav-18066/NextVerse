@@ -8,6 +8,13 @@
       "hint": "galaxy abstract"
     },
     {
+      "title": "Electronics Fundamentals",
+      "description": "Learn the building blocks of modern electronics, from diodes to RFID.",
+      "src": "https://picsum.photos/seed/25/600/400",
+      "alt": "A close-up of a circuit board",
+      "hint": "circuit board"
+    },
+    {
       "title": "AI & Machine Learning",
       "description": "Learn the fundamentals of artificial intelligence and machine learning.",
       "src": "https://picsum.photos/seed/2/600/400",
