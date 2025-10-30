@@ -112,7 +112,7 @@ export default function CourseDetailPage() {
                 <CardContent className="p-6">
                   <Tabs defaultValue="summary">
                     <div className="flex justify-between items-center mb-4">
-                      <TabsList className="bg-black/20 border border-white/10">
+                      <TabsList className="bg-transparent border border-white/10 p-1">
                         <TabsTrigger value="summary">Summary</TabsTrigger>
                         <TabsTrigger value="quiz">Quiz</TabsTrigger>
                       </TabsList>
