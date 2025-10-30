@@ -135,22 +135,20 @@ export default function Home() {
       </header>
       
       <main>
-        {process.env.NODE_ENV === 'development' && (
-          <Card className="mb-8 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-            <CardHeader>
-              <CardTitle>Admin Control</CardTitle>
-              <CardDescription>
-                Use this to populate your Firestore database with the initial set of courses.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button onClick={migrateData} disabled={isMigrating} className="w-full">
-                {isMigrating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
-                {isMigrating ? 'Migrating...' : `Migrate ${initialCourses.length} Courses to Firestore`}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+        <Card className="mb-8 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+          <CardHeader>
+            <CardTitle>Admin Control</CardTitle>
+            <CardDescription>
+              Use this to populate your Firestore database with the initial set of courses.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={migrateData} disabled={isMigrating} className="w-full">
+              {isMigrating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+              {isMigrating ? 'Migrating...' : `Migrate ${initialCourses.length} Courses to Firestore`}
+            </Button>
+          </CardContent>
+        </Card>
 
         <div className="mb-12 max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: '400ms' }}>
           <div className="relative">
