@@ -32,24 +32,6 @@ import {
 import { Input } from "@/components/ui/input";
 
 export default function AdminDashboard() {
-  // Dummy data - will be replaced with real data fetching
-  const progressData = [
-    { email: "user1@example.com", course: "Quantum Physics", progress: 80 },
-    { email: "user2@example.com", course: "Quantum Physics", progress: 40 },
-    { email: "user3@example.com", course: "Electronics", progress: 100 },
-    { email: "user4@example.com", course: "AI & ML", progress: 25 },
-    { email: "user5@example.com", course: "History of Rome", progress: 75 },
-    { email: "user1@example.com", course: "Electronics", progress: 60 },
-  ];
-
-  const chartData = [
-    { name: "Quantum Physics", users: 150 },
-    { name: "Electronics", users: 120 },
-    { name: "AI & ML", users: 200 },
-    { name: "History", users: 80 },
-    { name: "Rocket Science", users: 50 },
-  ];
-
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -71,9 +53,9 @@ export default function AdminDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,250</div>
+                <div className="text-2xl font-bold">0</div>
                 <p className="text-xs text-muted-foreground">
-                  +20.1% from last month
+                  +0% from last month
                 </p>
               </CardContent>
             </Card>
@@ -85,9 +67,9 @@ export default function AdminDashboard() {
                 <ListVideo className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">28</div>
+                <div className="text-2xl font-bold">0</div>
                 <p className="text-xs text-muted-foreground">
-                  +5 since last week
+                  +0 since last week
                 </p>
               </CardContent>
             </Card>
@@ -97,9 +79,9 @@ export default function AdminDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+12,234</div>
+                <div className="text-2xl font-bold">0</div>
                 <p className="text-xs text-muted-foreground">
-                  +19% from last month
+                  +0% from last month
                 </p>
               </CardContent>
             </Card>
@@ -110,9 +92,9 @@ export default function AdminDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">73%</div>
+                <div className="text-2xl font-bold">0%</div>
                 <p className="text-xs text-muted-foreground">
-                  +2% from last month
+                  +0% from last month
                 </p>
               </CardContent>
             </Card>
@@ -135,17 +117,7 @@ export default function AdminDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {progressData.map((data, index) => (
-                      <TableRow key={index}>
-                        <TableCell>
-                          <div className="font-medium">{data.email}</div>
-                        </TableCell>
-                        <TableCell>{data.course}</TableCell>
-                        <TableCell className="text-right">
-                          {data.progress}%
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {/* User progress data will be populated here */}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -192,7 +164,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
-                  <BarChart data={chartData}>
+                  <BarChart data={[]}>
                     <XAxis
                       dataKey="name"
                       stroke="#888888"
