@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -49,6 +50,9 @@ export default function LoginPage() {
         case "auth/wrong-password":
         case "auth/invalid-credential":
           setError("Invalid email or password.");
+          break;
+        case "auth/invalid-email":
+          setError("Please enter a valid email address.");
           break;
         default:
           setError("An unexpected error occurred. Please try again.");
@@ -102,6 +106,11 @@ export default function LoginPage() {
                   className="bg-black/20 text-white"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      handleLogin();
+                    }
+                  }}
                 />
               </div>
               <Button onClick={handleLogin} className="w-full">
