@@ -1,7 +1,9 @@
+
 "use client";
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,46 +23,56 @@ import type { AuthError } from "firebase/auth";
 
 export default function SignupPage() {
   const { auth, firestore } = useFirebase();
+  const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSignUp = async () => {
-    if (!auth || !firestore) return;
+  const handleSignUp = () => {
+    if (!auth || !firestore) {
+      setError("Authentication service is not available.");
+      return;
+    }
     setError(null); // Reset error state on new attempt
 
     const handleAuthError = (authError: AuthError) => {
-      if (authError.code === "auth/email-already-in-use") {
-        setError("This email is already in use. Please try another email or log in.");
-      } else {
-        setError("An unexpected error occurred. Please try again.");
+      switch (authError.code) {
+        case "auth/email-already-in-use":
+          setError(
+            "This email is already in use. Please try another email or log in."
+          );
+          break;
+        case "auth/weak-password":
+          setError("Password is too weak. Please choose a stronger password.");
+          break;
+        case "auth/invalid-email":
+          setError("Please enter a valid email address.");
+          break;
+        default:
+          setError("An unexpected error occurred during sign-up. Please try again.");
+          break;
       }
       console.error("Sign-up error:", authError);
     };
 
-    // This part creates the user in Firebase Auth.
-    // It now includes an error handling callback.
-    initiateEmailSignUp(auth, email, password, handleAuthError);
-
-    // We listen for the user to be created to get their UID.
-    // This part only runs if the user is created successfully.
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user && user.email === email) { // Ensure we're acting on the correct user
-        // Once we have the user, we can save their details to Firestore.
+    const handleSuccess = (user: any) => {
+       if (user && firestore) {
         const userRef = doc(firestore, "users", user.uid);
-        setDocumentNonBlocking(userRef, {
+        const userData = {
           id: user.uid,
           email: user.email,
           name: `${firstName} ${lastName}`,
           dateJoined: new Date().toISOString(),
-        }, { merge: true });
-
-        // Unsubscribe to avoid running this multiple times.
-        unsubscribe();
-      }
-    });
+        };
+        setDocumentNonBlocking(userRef, userData, { merge: true });
+        router.push("/user");
+       }
+    };
+    
+    // Non-blocking call to sign up.
+    initiateEmailSignUp(auth, email, password, handleAuthError, handleSuccess);
   };
 
   return (
@@ -140,6 +152,11 @@ export default function SignupPage() {
                   className="bg-black/20 text-white"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSignUp();
+                    }
+                  }}
                 />
               </div>
               <Button
