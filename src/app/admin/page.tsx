@@ -113,6 +113,8 @@ export default function AdminDashboard() {
                     <TableRow>
                       <TableHead>User</TableHead>
                       <TableHead>Course</TableHead>
+                      <TableHead>Main Topic</TableHead>
+                      <TableHead>SubTopic</TableHead>
                       <TableHead className="text-right">Progress</TableHead>
                     </TableRow>
                   </TableHeader>
