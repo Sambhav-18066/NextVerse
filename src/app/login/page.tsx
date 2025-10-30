@@ -32,6 +32,11 @@ export default function LoginPage() {
       router.push("/admin");
       return;
     }
+    // Special check for user credentials
+    if (email === "USER" && password === "USER") {
+      router.push("/user");
+      return;
+    }
 
     if (!auth) {
       setError("Authentication service is not available.");
