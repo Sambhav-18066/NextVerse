@@ -1,7 +1,7 @@
 "use client";
 
 import { StarsBackground } from "@/components/stars-background";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 
 export default function Home() {
@@ -16,12 +16,9 @@ export default function Home() {
           NextVerseEducation
         </h1>
         <Card
-          className="mt-8 animate-fade-in-up border-white/20 bg-white/10 text-white backdrop-blur-sm"
+          className="mt-8 animate-fade-in-up border-white/20 bg-white/10 text-white backdrop-blur-sm h-24 w-96"
           style={{ animationDelay: "0.4s" }}
         >
-          <CardHeader>
-            {/* The title was removed for a cleaner look. */}
-          </CardHeader>
         </Card>
         <div
           className="mt-8 animate-fade-in-up"
