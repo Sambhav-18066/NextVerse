@@ -150,7 +150,7 @@ export default function CourseDetailPage() {
                               <RadioGroup onValueChange={(value) => handleAnswerChange(q.question, value)}>
                                 {q.options.map((opt, i) => (
                                   <div key={i} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={opt} id={`${q.question}-opt${i}`} />
+                                    <RadioGroupItem value={opt} id={`${q.question}-opt${i}`} className="border-white text-white" />
                                     <Label htmlFor={`${q.question}-opt${i}`} className="text-white">{opt}</Label>
                                   </div>
                                 ))}
