@@ -50,6 +50,10 @@
           "type": "string",
           "description": "A short description of the course."
         },
+        "enrollmentCount": {
+          "type": "number",
+          "description": "The number of users enrolled in the course."
+        },
         "subTopics": {
           "type": "array",
           "description": "A list of sub-topics or modules within the course.",

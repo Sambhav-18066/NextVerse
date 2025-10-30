@@ -6,6 +6,7 @@ import {
   ListVideo,
   Users,
   Download,
+  Loader2,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import {
@@ -33,24 +34,74 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { useFirebase, useCollection, useMemoFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import { uploadCourseContent } from "@/lib/actions";
+import { useToast } from "@/hooks/use-toast";
+
 
 export default function AdminDashboard() {
+  const { firestore } = useFirebase();
+  const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const usersCollectionRef = useMemoFirebase(() => 
+    firestore ? collection(firestore, "users") : null,
+    [firestore]
+  );
+  const { data: users, isLoading: usersLoading } = useCollection(usersCollectionRef);
+  
+  const coursesCollectionRef = useMemoFirebase(() =>
+    firestore ? collection(firestore, "courses") : null,
+    [firestore]
+  );
+  const { data: courses, isLoading: coursesLoading } = useCollection(coursesCollectionRef);
+
+  const topCourses = courses
+    ?.slice()
+    .sort((a, b) => (b.enrollmentCount || 0) - (a.enrollmentCount || 0))
+    .slice(0, 5)
+    .map(course => ({ name: course.title, users: course.enrollmentCount || 0 }));
+
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      console.log("File selected:", file.name);
     }
   };
 
-  const handleUploadContent = () => {
+  const handleUploadContent = async () => {
     if (selectedFile) {
-      console.log("Uploading file:", selectedFile.name);
-      // Logic to parse and upload the excel sheet will be added here
+      setIsUploading(true);
+      try {
+        const fileBuffer = await selectedFile.arrayBuffer();
+        const result = await uploadCourseContent(fileBuffer);
+        if (result.success) {
+          toast({
+            title: "Upload Successful",
+            description: result.message,
+          });
+        } else {
+          throw new Error(result.message);
+        }
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Upload Failed",
+          description: error.message || "An unexpected error occurred.",
+        });
+      } finally {
+        setIsUploading(false);
+        setSelectedFile(null);
+      }
     } else {
-      console.log("No file selected for upload.");
+       toast({
+        variant: "destructive",
+        title: "No File Selected",
+        description: "Please select an Excel file to upload.",
+      });
     }
   };
 
@@ -65,12 +116,10 @@ export default function AdminDashboard() {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "CourseTemplate");
     
-    // Use write to create a binary string, then create a Blob
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([wbout], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
     
-    // Create a temporary link to trigger the download
     const a = document.createElement('a');
     a.href = url;
     a.download = 'CourseTemplate.xlsx';
@@ -93,9 +142,9 @@ export default function AdminDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{usersLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : users?.length ?? 0}</div>
                 <p className="text-xs text-muted-foreground">
-                  +0% from last month
+                  Registered on the platform
                 </p>
               </CardContent>
             </Card>
@@ -107,9 +156,9 @@ export default function AdminDashboard() {
                 <ListVideo className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
+                <div className="text-2xl font-bold">{coursesLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : courses?.length ?? 0}</div>
                 <p className="text-xs text-muted-foreground">
-                  +0 since last week
+                  Available for enrollment
                 </p>
               </CardContent>
             </Card>
@@ -121,7 +170,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="text-2xl font-bold">0</div>
                 <p className="text-xs text-muted-foreground">
-                  +0% from last month
+                  Feature coming soon
                 </p>
               </CardContent>
             </Card>
@@ -134,7 +183,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="text-2xl font-bold">0%</div>
                 <p className="text-xs text-muted-foreground">
-                  +0% from last month
+                  Feature coming soon
                 </p>
               </CardContent>
             </Card>
@@ -144,7 +193,7 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle>User Progress</CardTitle>
                 <CardDescription>
-                  An overview of user progress across different courses.
+                  An overview of user progress across different courses. (Coming Soon)
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -153,13 +202,15 @@ export default function AdminDashboard() {
                     <TableRow>
                       <TableHead>User</TableHead>
                       <TableHead>Course</TableHead>
-                      <TableHead>Main Topic</TableHead>
-                      <TableHead>SubTopic</TableHead>
-                      <TableHead className="text-right">Progress</TableHead>
+                      <TableHead>Progress</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {/* User progress data will be populated here */}
+                     <TableRow>
+                        <TableCell colSpan={3} className="text-center">
+                          User progress tracking is coming soon.
+                        </TableCell>
+                      </TableRow>
                   </TableBody>
                 </Table>
               </CardContent>
@@ -190,7 +241,10 @@ export default function AdminDashboard() {
                     </label>
                 </div>
                 <div className="flex w-full gap-2 mt-4">
-                  <Button className="flex-1" onClick={handleUploadContent}>Upload Content</Button>
+                  <Button className="flex-1" onClick={handleUploadContent} disabled={isUploading}>
+                    {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {isUploading ? "Uploading..." : "Upload Content"}
+                  </Button>
                   <Button variant="outline" className="flex-1" onClick={handleDownloadDemo}>
                     <Download className="mr-2 h-4 w-4" />
                     Download Demo
@@ -210,30 +264,37 @@ export default function AdminDashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={350}>
-                  <BarChart data={[]}>
-                    <XAxis
-                      dataKey="name"
-                      stroke="#888888"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      stroke="#888888"
-                      fontSize={12}
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(value) => `${value}`}
-                    />
-                    <Bar
-                      dataKey="users"
-                      fill="currentColor"
-                      radius={[4, 4, 0, 0]}
-                      className="fill-primary"
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
+                 {coursesLoading ? (
+                    <div className="flex justify-center items-center h-[350px]">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                    </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={350}>
+                      <BarChart data={topCourses}>
+                        <XAxis
+                          dataKey="name"
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <YAxis
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(value) => `${value}`}
+                          allowDecimals={false}
+                        />
+                        <Bar
+                          dataKey="users"
+                          fill="currentColor"
+                          radius={[4, 4, 0, 0]}
+                          className="fill-primary"
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
               </CardContent>
             </Card>
         </main>
