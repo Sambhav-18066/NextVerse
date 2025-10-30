@@ -31,6 +31,58 @@
         "name",
         "dateJoined"
       ]
+    },
+    "Course": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Course",
+      "type": "object",
+      "description": "Represents a course in the EduStream application.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Course entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the course."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short description of the course."
+        },
+        "subTopics": {
+          "type": "array",
+          "description": "A list of sub-topics or modules within the course.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "videoId": { "type": "string" },
+              "duration": { "type": "string" },
+              "transcript": { "type": "string" }
+            },
+            "required": ["id", "title", "videoId", "transcript"]
+          }
+        }
+      },
+      "required": ["id", "title", "description", "subTopics"]
+    },
+    "CourseProgress": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CourseProgress",
+      "type": "object",
+      "description": "Tracks a user's progress for a specific course.",
+      "properties": {
+        "completedTopics": {
+          "type": "array",
+          "description": "A list of topic IDs that the user has completed.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["completedTopics"]
     }
   },
   "auth": {
@@ -48,7 +100,7 @@
           "schema": {
             "$ref": "#/backend/entities/UserProfile"
           },
-          "description": "Stores user profile information. The 'userId' parameter corresponds to the Firebase Authentication UID, ensuring that each user's profile is stored separately and securely. This structure enables path-based ownership, where only the authenticated user can access their own profile data.",
+          "description": "Stores user profile information. The 'userId' parameter corresponds to the Firebase Authentication UID, ensuring that each user's profile is stored separately and securely.",
           "params": [
             {
               "name": "userId",
@@ -56,8 +108,44 @@
             }
           ]
         }
+      },
+      {
+        "path": "/courses/{courseId}",
+        "definition": {
+          "entityName": "Course",
+          "schema": {
+            "$ref": "#/backend/entities/Course"
+          },
+          "description": "Stores all the data for a specific course, including its sub-topics and content.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/progress/{courseId}",
+        "definition": {
+          "entityName": "CourseProgress",
+          "schema": {
+            "$ref": "#/backend/entities/CourseProgress"
+          },
+          "description": "Stores a user's progress for a single course, keyed by courseId.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The Firebase Authentication UID of the user."
+            },
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            }
+          ]
+        }
       }
     ],
-    "reasoning": "The Firestore structure is designed to store user profile information upon account creation. The primary goal is to ensure a simple and secure way to manage user data. This design prioritizes storing user profiles in a dedicated collection for easy access and management. There are no complex access patterns or collaborative data requirements outlined in the user's request."
+    "reasoning": "The Firestore structure is designed to manage users, courses, and their progress. Storing courses in a dedicated top-level collection allows for easy management by admins. User progress is nested under each user, ensuring data ownership and security, and is further segmented by course for efficient querying."
   }
 }
