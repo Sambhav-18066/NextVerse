@@ -67,7 +67,7 @@ export default function UserPage() {
     <div className="bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35] text-white">
       <header className="sticky top-0 z-20 p-4 bg-transparent backdrop-blur-sm">
         <div className="container mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold">
+          <div className="text-2xl font-bold text-white">
             Welcome, {displayName}!
           </div>
           <DropdownMenu>
@@ -110,7 +110,7 @@ export default function UserPage() {
       <section id="courses-section" className="py-20 px-4 md:px-8">
         <div className="container mx-auto">
           <div className="mb-12 flex flex-col items-center gap-6 text-center">
-            <h2 className="text-4xl font-bold">Explore Our Courses</h2>
+            <h2 className="text-4xl font-bold text-white">Explore Our Courses</h2>
             <div className="relative w-full max-w-lg">
               <Input
                 type="search"
@@ -138,7 +138,7 @@ export default function UserPage() {
                     />
                   </CardHeader>
                   <CardContent className="flex-grow p-6">
-                    <CardTitle className="mb-2 text-xl font-bold">
+                    <CardTitle className="mb-2 text-xl font-bold text-white">
                       {course.title}
                     </CardTitle>
                     <p className="text-white/80">{course.description}</p>
