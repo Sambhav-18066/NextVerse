@@ -5,7 +5,9 @@ import {
   FileUp,
   ListVideo,
   Users,
+  Download,
 } from "lucide-react";
+import * as XLSX from "xlsx";
 import {
   Bar,
   BarChart,
@@ -38,6 +40,19 @@ export default function AdminDashboard() {
       console.log("File selected:", file.name);
       // Logic to parse and upload the excel sheet will be added here
     }
+  };
+
+  const handleDownloadDemo = () => {
+    const data = [
+      ["Main Topic", "SubTopic", "Youtube Video Link", "Short Description"],
+      ["Quantum Physics Explained", "Introduction to Quantum States", "https://www.youtube.com/watch?v=6-rA-v_oW2A", "A brief intro to quantum states."],
+      ["Quantum Physics Explained", "Wave-Particle Duality", "https://www.youtube.com/watch?v=M7lc1UVf-VE", "Exploring the dual nature of particles."],
+      ["Electronics Fundamentals", "Modulation", "https://www.youtube.com/watch?v=mHvV_Tv8HDQ", "Understanding signal modulation."]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "CourseTemplate");
+    XLSX.writeFile(wb, "CourseTemplate.xlsx");
   };
 
   return (
@@ -150,7 +165,13 @@ export default function AdminDashboard() {
                     <Input id="file-upload" type="file" className="hidden" accept=".xlsx, .xls" onChange={handleFileUpload} />
                     </label>
                 </div>
-                <Button className="mt-4 w-full">Upload Content</Button>
+                <div className="flex w-full gap-2 mt-4">
+                  <Button className="flex-1">Upload Content</Button>
+                  <Button variant="outline" className="flex-1" onClick={handleDownloadDemo}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Demo
+                  </Button>
+                </div>
                 <p className="text-xs text-muted-foreground mt-2">
                   Format: "Main Topic", "SubTopic", "Youtube Video Link", "Short Description"
                 </p>
