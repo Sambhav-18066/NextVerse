@@ -109,20 +109,20 @@ export default function CourseDetailPage() {
   return (
     <div className="relative min-h-screen bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35] text-white p-4 sm:p-6 md:p-8">
       <StarsBackground />
-      <div className="relative z-10 mx-auto max-w-6xl">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center animate-fade-in-up text-white">
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <h1 className="text-3xl md:text-5xl font-bold mb-4 md:mb-8 text-center animate-fade-in-up text-white">
           {course.title}
         </h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 flex flex-col gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 flex flex-col gap-8">
             <VideoPlayer videoId={currentTopic?.videoId || null} />
 
             {currentTopic && (
               <Card className="border-white/20 bg-white/10 backdrop-blur-sm">
-                <CardContent className="p-6">
+                <CardContent className="p-4 md:p-6">
                   <Tabs defaultValue="summary">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex flex-wrap justify-between items-center mb-4 gap-4">
                       <TabsList className="bg-transparent border border-white/10 p-1">
                         <TabsTrigger value="summary">Summary</TabsTrigger>
                         <TabsTrigger value="quiz">Quiz</TabsTrigger>
@@ -213,3 +213,5 @@ export default function CourseDetailPage() {
     </div>
   );
 }
+
+    

@@ -153,9 +153,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+      <div className="flex flex-col sm:gap-4 sm:py-4 md:pl-14">
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -250,7 +250,7 @@ export default function AdminDashboard() {
                     htmlFor="file-upload"
                     className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:border-gray-600"
                     >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
                         <FileUp className="w-10 h-10 mb-3 text-gray-400" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                         {selectedFile ? selectedFile.name : <><span className="font-semibold">Click to upload</span> or drag and drop</>}
@@ -262,7 +262,7 @@ export default function AdminDashboard() {
                     <Input id="file-upload" type="file" className="hidden" accept=".xlsx, .xls" onChange={handleFileUpload} />
                     </label>
                 </div>
-                <div className="flex w-full gap-2 mt-4">
+                <div className="flex w-full flex-col sm:flex-row gap-2 mt-4">
                   <Button className="flex-1" onClick={handleUploadContent} disabled={isUploading}>
                     {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     {isUploading ? "Uploading..." : "Upload Content"}
@@ -272,7 +272,7 @@ export default function AdminDashboard() {
                     Download Demo
                   </Button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">
+                <p className="text-xs text-muted-foreground mt-2 text-center">
                   Format: "Main Topic", "SubTopic", "Youtube Video Link", "Short Description"
                 </p>
               </CardContent>
@@ -299,6 +299,10 @@ export default function AdminDashboard() {
                           fontSize={12}
                           tickLine={false}
                           axisLine={false}
+                          angle={-45}
+                          textAnchor="end"
+                          height={80}
+                          interval={0}
                         />
                         <YAxis
                           stroke="#888888"
@@ -324,3 +328,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+    

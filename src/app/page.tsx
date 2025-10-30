@@ -36,16 +36,16 @@ export default function Home() {
 
   return (
     <div className="bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35] text-white">
-      <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+      <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-4">
         <StarsBackground />
         <div className="z-10 flex flex-col items-center text-center">
           <h1
-            className="animate-fade-in-up text-5xl font-bold text-white md:text-7xl"
+            className="animate-fade-in-up text-4xl sm:text-5xl font-bold text-white md:text-7xl"
             style={{ animationDelay: "0.2s" }}
           >
             NextVerseEducation
           </h1>
-          <div className="mt-8 flex gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <div
               className="animate-fade-in-up transition-transform duration-300 ease-in-out active:scale-95"
               style={{ animationDelay: "0.6s" }}
@@ -67,18 +67,18 @@ export default function Home() {
       <section id="courses-section" className="py-20 px-4 md:px-8">
         <div className="container mx-auto">
           <div className="mb-12 flex flex-col items-center gap-6 text-center">
-            <h2 className="text-4xl font-bold">Explore Our Courses</h2>
+            <h2 className="text-3xl md:text-4xl font-bold">Explore Our Courses</h2>
             <div className="relative w-full max-w-lg">
               <Input
                 type="search"
                 placeholder="Search for courses..."
-                className="w-full rounded-full bg-white/10 p-6 pl-12 text-lg text-white placeholder:text-gray-300"
+                className="w-full rounded-full bg-white/10 py-5 px-6 md:py-6 pl-12 text-base md:text-lg text-white placeholder:text-gray-300"
               />
               <Search className="absolute left-4 top-1/2 h-6 w-6 -translate-y-1/2 text-gray-300" />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {placeholderImages.courses.map((course) => (
               <motion.div
                 key={course.title}
@@ -123,7 +123,7 @@ export default function Home() {
         {selectedCourse && (
           <motion.div
             layoutId={`card-container-${selectedCourse.title}`}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg p-4"
           >
             <Card className="w-full max-w-3xl overflow-hidden rounded-lg border-white/20 bg-white/10">
               <CardHeader className="p-0">
@@ -137,8 +137,8 @@ export default function Home() {
                   />
                 </motion.div>
               </CardHeader>
-              <CardContent className="p-6">
-                <motion.h2 layoutId={`card-title-${selectedCourse.title}`} className="mb-4 text-3xl font-bold text-white">
+              <CardContent className="p-6 max-h-[60vh] overflow-y-auto">
+                <motion.h2 layoutId={`card-title-${selectedCourse.title}`} className="mb-4 text-2xl md:text-3xl font-bold text-white">
                   {selectedCourse.title}
                 </motion.h2>
                 <motion.p layoutId={`card-description-${selectedCourse.title}`} className="text-white/80">
@@ -158,3 +158,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
