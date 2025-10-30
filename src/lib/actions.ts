@@ -1,6 +1,7 @@
+
 'use server';
 
-import { collection, doc, runTransaction, serverTimestamp } from 'firebase/admin/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
 import { getFirebaseAdmin } from '@/firebase/admin';
 import * as XLSX from 'xlsx';
 
@@ -70,9 +71,9 @@ export async function uploadCourseContent(fileBuffer: ArrayBuffer) {
       }
     });
 
-    await runTransaction(db, async (transaction) => {
+    await db.runTransaction(async (transaction) => {
       coursesMap.forEach((course, title) => {
-        const courseRef = doc(db, 'courses', title);
+        const courseRef = db.collection('courses').doc(title);
         transaction.set(courseRef, course, { merge: true });
       });
     });
