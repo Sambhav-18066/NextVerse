@@ -102,7 +102,7 @@ export default function Home() {
                     </motion.div>
                   </CardHeader>
                   <CardContent className="flex-grow p-6">
-                    <motion.h2 layoutId={`card-title-${course.title}`} className="mb-2 text-xl font-bold">
+                    <motion.h2 layoutId={`card-title-${course.title}`} className="mb-2 text-xl font-bold text-white">
                       {course.title}
                     </motion.h2>
                     <motion.p layoutId={`card-description-${course.title}`} className="text-white/80">
@@ -138,7 +138,7 @@ export default function Home() {
                 </motion.div>
               </CardHeader>
               <CardContent className="p-6">
-                <motion.h2 layoutId={`card-title-${selectedCourse.title}`} className="mb-4 text-3xl font-bold">
+                <motion.h2 layoutId={`card-title-${selectedCourse.title}`} className="mb-4 text-3xl font-bold text-white">
                   {selectedCourse.title}
                 </motion.h2>
                 <motion.p layoutId={`card-description-${selectedCourse.title}`} className="text-white/80">
