@@ -3,7 +3,6 @@
 
 import { StarsBackground } from "@/components/stars-background";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
-import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -14,10 +13,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Search } from "lucide-react";
+import { Search, UserCircle } from "lucide-react";
 import placeholderImages from "@/lib/placeholder-images.json";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useFirebase } from "@/firebase";
+import { useRouter } from "next/navigation";
 
 export default function UserPage() {
+  const { auth, user } = useFirebase();
+  const router = useRouter();
+
   const handleScroll = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const coursesSection = document.getElementById("courses-section");
@@ -26,9 +38,38 @@ export default function UserPage() {
     }
   };
 
+  const handleLogout = () => {
+    if (auth) {
+      auth.signOut();
+      router.push("/login");
+    }
+  };
+
   return (
     <div className="bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35] text-white">
-      <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+      <header className="sticky top-0 z-20 p-4 bg-transparent backdrop-blur-sm">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="text-2xl font-bold">
+            Welcome, {user?.displayName || "User"}!
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <UserCircle className="h-8 w-8" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>My Learnings</DropdownMenuItem>
+              <DropdownMenuItem>My Progress</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </header>
+      <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden -mt-20">
         <StarsBackground />
         <div className="z-10 flex flex-col items-center text-center">
           <h1
