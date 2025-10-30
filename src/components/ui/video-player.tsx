@@ -9,7 +9,7 @@ export function VideoPlayer({ videoId }: VideoPlayerProps) {
   if (!videoId) {
     return (
       <div className="aspect-video w-full rounded-lg bg-black/50 border-2 border-dashed border-white/30 flex items-center justify-center">
-        <p className="text-white/70">Select a video to start learning.</p>
+        <p className="text-white">Select a video to start learning.</p>
       </div>
     );
   }
@@ -28,3 +28,4 @@ export function VideoPlayer({ videoId }: VideoPlayerProps) {
     </div>
   );
 }
+

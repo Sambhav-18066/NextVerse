@@ -110,7 +110,7 @@ export default function CourseDetailPage() {
     <div className="relative min-h-screen bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35] text-white p-4 sm:p-6 md:p-8">
       <StarsBackground />
       <div className="relative z-10 mx-auto max-w-6xl">
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center animate-fade-in-up">
+        <h1 className="text-4xl md:text-5xl font-bold mb-8 text-center animate-fade-in-up text-white">
           {course.title}
         </h1>
         
@@ -136,22 +136,22 @@ export default function CourseDetailPage() {
                     </div>
                     
                     <TabsContent value="summary">
-                      {isGenerating && !generatedContent[currentTopic.id]?.summary && <p>Generating summary...</p>}
-                      <p className="text-white/80 leading-relaxed">{generatedContent[currentTopic.id]?.summary}</p>
+                      {isGenerating && !generatedContent[currentTopic.id]?.summary && <p className="text-white">Generating summary...</p>}
+                      <p className="text-white leading-relaxed">{generatedContent[currentTopic.id]?.summary}</p>
                     </TabsContent>
                     
                     <TabsContent value="quiz">
-                       {isGenerating && !generatedContent[currentTopic.id]?.quiz?.length && <p>Generating quiz...</p>}
+                       {isGenerating && !generatedContent[currentTopic.id]?.quiz?.length && <p className="text-white">Generating quiz...</p>}
                       {generatedContent[currentTopic.id]?.quiz?.length > 0 && (
                         <div className="flex flex-col gap-6">
                           {generatedContent[currentTopic.id].quiz.map((q, index) => (
                             <div key={index}>
-                              <p className="font-semibold mb-2">{index + 1}. {q.question}</p>
+                              <p className="font-semibold mb-2 text-white">{index + 1}. {q.question}</p>
                               <RadioGroup onValueChange={(value) => handleAnswerChange(q.question, value)}>
                                 {q.options.map((opt, i) => (
                                   <div key={i} className="flex items-center space-x-2">
                                     <RadioGroupItem value={opt} id={`${q.question}-opt${i}`} />
-                                    <Label htmlFor={`${q.question}-opt${i}`}>{opt}</Label>
+                                    <Label htmlFor={`${q.question}-opt${i}`} className="text-white">{opt}</Label>
                                   </div>
                                 ))}
                               </RadioGroup>
@@ -160,7 +160,7 @@ export default function CourseDetailPage() {
                           <Button onClick={handleSubmitQuiz}>Submit Quiz</Button>
                           {quizScore[currentTopic.id] !== undefined && quizScore[currentTopic.id] !== null && (
                              <div className="mt-4 p-4 rounded-lg bg-black/30">
-                               <p className="text-lg font-bold">Your score: {quizScore[currentTopic.id]?.toFixed(2)}%</p>
+                               <p className="text-lg font-bold text-white">Your score: {quizScore[currentTopic.id]?.toFixed(2)}%</p>
                                {quizScore[currentTopic.id]! >= 75 ? (
                                  <p className="text-green-400">Congratulations! You passed. The next topic is unlocked.</p>
                                ) : (
@@ -178,7 +178,7 @@ export default function CourseDetailPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <h2 className="text-2xl font-semibold mb-2">Course Content</h2>
+            <h2 className="text-2xl font-semibold mb-2 text-white">Course Content</h2>
             {course.subTopics.map((topic: any) => {
               const isLocked = !unlockedTopics.has(topic.id);
               return (
@@ -191,8 +191,8 @@ export default function CourseDetailPage() {
                 >
                   <div className="p-4 flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold">{topic.id}. {topic.title}</h3>
-                      <p className="text-sm text-white/70">{topic.duration}</p>
+                      <h3 className="font-semibold text-white">{topic.id}. {topic.title}</h3>
+                      <p className="text-sm text-white">{topic.duration}</p>
                     </div>
                     <Button
                       size="icon"
@@ -213,3 +213,4 @@ export default function CourseDetailPage() {
     </div>
   );
 }
+
