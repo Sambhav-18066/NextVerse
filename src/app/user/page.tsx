@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useFirebase } from "@/firebase";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function UserPage() {
   const { auth, user } = useFirebase();
@@ -58,7 +59,7 @@ export default function UserPage() {
                 <UserCircle className="h-8 w-8" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 border-white/20 bg-white/10 text-white backdrop-blur-sm" align="end">
+            <DropdownMenuContent className="w-56 border-white/20 bg-black/50 text-white backdrop-blur-lg" align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>My Learnings</DropdownMenuItem>
@@ -105,30 +106,31 @@ export default function UserPage() {
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {placeholderImages.courses.map((course, index) => (
-              <Card
-                key={index}
-                className="flex transform flex-col overflow-hidden rounded-lg border-white/20 bg-white/10 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20"
-              >
-                <CardHeader className="p-0">
-                  <Image
-                    src={course.src}
-                    alt={course.alt}
-                    width={600}
-                    height={400}
-                    className="h-48 w-full object-cover"
-                    data-ai-hint={course.hint}
-                  />
-                </CardHeader>
-                <CardContent className="flex-grow p-6">
-                  <CardTitle className="mb-2 text-xl font-bold">
-                    {course.title}
-                  </CardTitle>
-                  <p className="text-white/80">{course.description}</p>
-                </CardContent>
-                <CardFooter className="p-6 pt-0">
-                  <Button className="w-full">Learn More</Button>
-                </CardFooter>
-              </Card>
+              <Link href={`/courses/${encodeURIComponent(course.title)}`} key={index}>
+                <Card
+                  className="flex h-full transform flex-col overflow-hidden rounded-lg border-white/20 bg-white/10 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20"
+                >
+                  <CardHeader className="p-0">
+                    <Image
+                      src={course.src}
+                      alt={course.alt}
+                      width={600}
+                      height={400}
+                      className="h-48 w-full object-cover"
+                      data-ai-hint={course.hint}
+                    />
+                  </CardHeader>
+                  <CardContent className="flex-grow p-6">
+                    <CardTitle className="mb-2 text-xl font-bold">
+                      {course.title}
+                    </CardTitle>
+                    <p className="text-white/80">{course.description}</p>
+                  </CardContent>
+                  <CardFooter className="p-6 pt-0">
+                    <Button className="w-full">Learn More</Button>
+                  </CardFooter>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
