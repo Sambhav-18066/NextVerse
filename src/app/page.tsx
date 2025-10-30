@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState } from "react";
 import { StarsBackground } from "@/components/stars-background";
 import { ShimmerButton } from "@/components/ui/shimmer-button";
 import Link from "next/link";
@@ -14,10 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import placeholderImages from "@/lib/placeholder-images.json";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const handleScroll = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const coursesSection = document.getElementById("courses-section");
@@ -25,6 +29,10 @@ export default function Home() {
       coursesSection.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const selectedCourse = selectedId
+    ? placeholderImages.courses.find((c) => c.title === selectedId)
+    : null;
 
   return (
     <div className="bg-gradient-to-tr from-[#000000] via-[#0c0c2c] to-[#1a0f35] text-white">
@@ -71,36 +79,82 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {placeholderImages.courses.map((course, index) => (
-              <Link href={`/courses/${encodeURIComponent(course.title)}`} key={index}>
+            {placeholderImages.courses.map((course) => (
+              <motion.div
+                key={course.title}
+                layoutId={`card-container-${course.title}`}
+                onClick={() => setSelectedId(course.title)}
+                className="cursor-pointer"
+              >
                 <Card
                   className="flex h-full transform flex-col overflow-hidden rounded-lg border-white/20 bg-white/10 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20"
                 >
                   <CardHeader className="p-0">
-                    <Image
-                      src={course.src}
-                      alt={course.alt}
-                      width={600}
-                      height={400}
-                      className="h-48 w-full object-cover"
-                      data-ai-hint={course.hint}
-                    />
+                    <motion.div layoutId={`card-image-${course.title}`}>
+                      <Image
+                        src={course.src}
+                        alt={course.alt}
+                        width={600}
+                        height={400}
+                        className="h-48 w-full object-cover"
+                        data-ai-hint={course.hint}
+                      />
+                    </motion.div>
                   </CardHeader>
                   <CardContent className="flex-grow p-6">
-                    <CardTitle className="mb-2 text-xl font-bold">
+                    <motion.h2 layoutId={`card-title-${course.title}`} className="mb-2 text-xl font-bold">
                       {course.title}
-                    </CardTitle>
-                    <p className="text-white/80">{course.description}</p>
+                    </motion.h2>
+                    <motion.p layoutId={`card-description-${course.title}`} className="text-white/80">
+                      {course.description}
+                    </motion.p>
                   </CardContent>
                   <CardFooter className="p-6 pt-0">
                     <Button className="w-full">Learn More</Button>
                   </CardFooter>
                 </Card>
-              </Link>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
+
+      <AnimatePresence>
+        {selectedCourse && (
+          <motion.div
+            layoutId={`card-container-${selectedCourse.title}`}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg"
+          >
+            <Card className="w-full max-w-3xl overflow-hidden rounded-lg border-white/20 bg-white/10">
+              <CardHeader className="p-0">
+                <motion.div layoutId={`card-image-${selectedCourse.title}`}>
+                  <Image
+                    src={selectedCourse.src}
+                    alt={selectedCourse.alt}
+                    width={800}
+                    height={450}
+                    className="h-auto w-full object-cover"
+                  />
+                </motion.div>
+              </CardHeader>
+              <CardContent className="p-6">
+                <motion.h2 layoutId={`card-title-${selectedCourse.title}`} className="mb-4 text-3xl font-bold">
+                  {selectedCourse.title}
+                </motion.h2>
+                <motion.p layoutId={`card-description-${selectedCourse.title}`} className="text-white/80">
+                  {selectedCourse.description} This course offers a deep dive into the subject, covering advanced topics and providing hands-on exercises. It's designed for learners who want to go beyond the basics and master the material.
+                </motion.p>
+              </CardContent>
+              <motion.button
+                className="absolute top-4 right-4 z-50 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-white/20"
+                onClick={() => setSelectedId(null)}
+              >
+                <X className="h-6 w-6" />
+              </motion.button>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
