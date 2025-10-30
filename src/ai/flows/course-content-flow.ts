@@ -56,10 +56,9 @@ The summary should be 2-3 paragraphs long, capturing the key concepts and main p
 
 The quiz must contain exactly 4 multiple-choice questions. Each question must have exactly 4 options, one of which is the correct answer. The questions should test understanding of the core concepts presented in the transcript.
 
-Video Title: {{{title}}}
+Video Title: ${input.title}
 Transcript:
-{{{transcript}}}`,
-          input,
+${input.transcript}`,
           output: {
             schema: GenerateCourseContentOutputSchema,
           }
