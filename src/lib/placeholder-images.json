@@ -3,73 +3,73 @@
     {
       "id": "quantum-computing-course",
       "description": "Abstract image representing quantum computing concepts",
-      "imageUrl": "https://images.unsplash.com/photo-1681908571122-97f349e1ace0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxxdWFudHVtJTIwY29tcHV0ZXJ8ZW58MHx8fHwxNzYxNTMyNTg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1609705024873-7add858e3036?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxxdWFudHVtJTIwY29tcHV0ZXJ8ZW58MHx8fHwxNzYxNzcyNTczfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "quantum computer"
     },
     {
       "id": "future-of-ai-course",
       "description": "Futuristic image of an AI brain or network",
-      "imageUrl": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTc2MTUwMjkyM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1694903110330-cc64b7e1d21d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTc2MTczODIzNXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "artificial intelligence"
     },
     {
       "id": "analog-digital-modulation-course",
       "description": "Image representing signal waves for modulation",
-      "imageUrl": "https://images.unsplash.com/photo-1548695602-22634c340195?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzaWduYWwlMjB3YXZlfGVufDB8fHx8MTc2MTkyMzkzNHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1646121477962-09433db5d6cf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzaWduYWwlMjB3YXZlfGVufDB8fHx8MTc2MTcxOTMwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "signal wave"
     },
     {
       "id": "civil-engineering-course",
       "description": "Image of a bridge or structure representing structural analysis",
-      "imageUrl": "https://images.unsplash.com/photo-1541696495338-3e4745a552a4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHJ1Y3R1cmFsJTIwYW5hbHlzaXN8ZW58MHx8fHwxNzYxNjA2OTc5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://picsum.photos/seed/structure/600/400",
       "imageHint": "structural analysis"
     },
     {
       "id": "soil-science-course",
       "description": "Image showing different layers of soil",
-      "imageUrl": "https://images.unsplash.com/photo-1601831818841-a5d5362c4bf5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzb2lsJTIwc2NpZW5jZXxlbnwwfHx8fDE3NjE2MDcwMTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1758702046109-1ca08784e691?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzb2lsJTIwc2NpZW5jZXxlbnwwfHx8fDE3NjE4MjA2MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "soil science"
     },
     {
       "id": "human-anatomy-course",
       "description": "Illustration of human anatomy",
-      "imageUrl": "https://images.unsplash.com/photo-1580281657692-081829370399?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxodW1hbiUyMGFuYXRvbXl8ZW58MHx8fHwxNzYxNjA3MDM0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1539815208687-a0f05e15d601?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxodW1hbiUyMGFuYXRvbXl8ZW58MHx8fHwxNzYxODEwMTU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "human anatomy"
     },
     {
       "id": "wireless-networking-course",
       "description": "Image representing wireless network signals or a router",
-      "imageUrl": "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3aXJlbGVzcyUyMG5ldHdvcmtpbmd8ZW58MHx8fHwxNzYxNjA3MDYyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1603726811255-1ae496aeaab9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3aXJlbGVzcyUyMG5ldHdvcmtpbmd8ZW58MHx8fHwxNzYxODIwNjE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "wireless networking"
     },
     {
       "id": "philosophy-course",
       "description": "A bust of a classical philosopher.",
-      "imageUrl": "https://images.unsplash.com/photo-1590234732101-3cf83c92e92c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwaGlsb3NvcGh5fGVufDB8fHx8MTc2MjAwNTQ2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1650214140130-e95256e336e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwaGlsb3NvcGh5JTIwdGhpbmtlcnxlbnwwfHx8fDE3NjE4MjA2MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "philosophy thinker"
     },
     {
       "id": "graphic-design-course",
       "description": "Colorful geometric shapes and design tools.",
-      "imageUrl": "https://images.unsplash.com/photo-1522881193457-31ae894a4e4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxncmFwaGljJTIwZGVzaWdufGVufDB8fHx8MTc2MjAwNTQ4M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1512295767273-ac109ac3acfa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxncmFwaGljJTIwZGVzaWdufGVufDB8fHx8MTc2MTcxOTczNnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "graphic design"
     },
     {
       "id": "creative-writing-course",
       "description": "A vintage typewriter with a blank page.",
-      "imageUrl": "https://images.unsplash.com/photo-1554941426-e9604e34bc94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjcmVhdGl2ZSUyMHdyaXRpbmd8ZW58MHx8fHwxNzYyMDA1NTEwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1555601568-c9e6f328489b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjcmVhdGl2ZSUyMHdyaXRpbmd8ZW58MHx8fHwxNzYxNzkyNjc2fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "creative writing"
     },
     {
       "id": "economics-course",
       "description": "A graph showing stock market trends.",
-      "imageUrl": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlY29ub21pY3N8ZW58MHx8fHwxNzYyMDA1NTMxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1731910549709-bfaffd5e73d9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlY29ub21pY3MlMjBncmFwaHxlbnwwfHx8fDE3NjE4MjA2MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "economics graph"
     },
     {
       "id": "climate-change-course",
       "description": "A split image showing a healthy planet and a polluted one.",
-      "imageUrl": "https://images.unsplash.com/photo-1577985051167-3d7355234125?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbGltYXRlJTIwY2hhbmdlfGVufDB8fHx8MTc2MjAwNTU0OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1615092296061-e2ccfeb2f3d6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjbGltYXRlJTIwY2hhbmdlfGVufDB8fHx8MTc2MTgyMDYxOXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "climate change"
     }
   ]

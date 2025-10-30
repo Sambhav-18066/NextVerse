@@ -23,8 +23,8 @@ export function CourseCard({ course, className }: CourseCardProps) {
              <Image 
               src={placeholder.imageUrl} 
               alt={placeholder.description} 
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              width={600}
+              height={400}
               className="object-cover rounded-t-lg"
               data-ai-hint={placeholder.imageHint}
             />
