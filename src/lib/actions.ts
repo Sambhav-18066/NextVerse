@@ -88,33 +88,34 @@ export async function uploadCourseContent(fileBuffer: ArrayBuffer) {
 export async function getDashboardStats() {
   const { db, auth } = getFirebaseAdmin();
   if (!db || !auth) {
-    throw new Error('Firebase Admin SDK not initialized');
+    // This will now throw an error if the admin SDK is not initialized
+    // which is more helpful for debugging than returning a success:false message.
+    throw new Error('Firebase Admin SDK not initialized. Check server logs for details.');
   }
-  try {
-    const usersPromise = auth.listUsers();
-    const coursesPromise = db.collection('courses').count().get();
-    const topCoursesPromise = db.collection('courses')
-      .orderBy('enrollmentCount', 'desc')
-      .limit(5)
-      .get();
 
-    const [userRecords, coursesSnapshot, topCoursesSnapshot] = await Promise.all([
-        usersPromise, 
-        coursesPromise,
-        topCoursesPromise
-    ]);
+  // The try/catch is removed here for debugging. If getFirebaseAdmin() or any of the
+  // subsequent calls fail, the actual error will be propagated to the client,
+  // which is what we want to see.
+  const usersPromise = auth.listUsers();
+  const coursesPromise = db.collection('courses').count().get();
+  const topCoursesPromise = db.collection('courses')
+    .orderBy('enrollmentCount', 'desc')
+    .limit(5)
+    .get();
 
-    const userCount = userRecords.users.length;
-    const courseCount = coursesSnapshot.data().count;
-    
-    const topCourses = topCoursesSnapshot.docs.map(doc => ({
-      name: doc.data().title,
-      users: doc.data().enrollmentCount || 0,
-    }));
+  const [userRecords, coursesSnapshot, topCoursesSnapshot] = await Promise.all([
+      usersPromise, 
+      coursesPromise,
+      topCoursesPromise
+  ]);
 
-    return { success: true, userCount, courseCount, topCourses };
-  } catch (error: any) {
-    console.error('Error fetching dashboard stats:', error);
-    return { success: false, message: error.message || 'An unknown error occurred.' };
-  }
+  const userCount = userRecords.users.length;
+  const courseCount = coursesSnapshot.data().count;
+  
+  const topCourses = topCoursesSnapshot.docs.map(doc => ({
+    name: doc.data().title,
+    users: doc.data().enrollmentCount || 0,
+  }));
+
+  return { success: true, userCount, courseCount, topCourses };
 }
