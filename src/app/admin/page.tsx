@@ -52,39 +52,42 @@ export default function AdminDashboard() {
   const [topCourses, setTopCourses] = useState<TopCourse[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
 
-  const fetchStats = useCallback(async () => {
-    setStatsLoading(true);
-    try {
-      const result = await getDashboardStats();
-      if (result.success) {
-        setStats({ 
-          userCount: result.userCount ?? 0, 
-          courseCount: result.courseCount ?? 0 
+  useEffect(() => {
+    const fetchStats = async () => {
+      setStatsLoading(true);
+      try {
+        const result = await getDashboardStats();
+        if (result.success) {
+          setStats({
+            userCount: result.userCount ?? 0,
+            courseCount: result.courseCount ?? 0,
+          });
+          setTopCourses(result.topCourses ?? []);
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Failed to load stats",
+            description: result.message,
+          });
+        }
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: "Failed to load stats",
+          description: error.message || "An unexpected error occurred.",
         });
-        setTopCourses(result.topCourses ?? []);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Failed to load stats",
-          description: result.message
-        })
+      } finally {
+        setStatsLoading(false);
       }
-    } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: "Failed to load stats",
-          description: error.message || "An unexpected error occurred."
-        })
-    } finally {
+    };
+
+    if (user) {
+      fetchStats();
+    } else {
+      // If there's no user, don't show loading indefinitely.
       setStatsLoading(false);
     }
-  }, [toast]);
-
-  useEffect(() => {
-    if (user) {
-        fetchStats();
-    }
-  }, [user, fetchStats]);
+  }, [user, toast]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -104,7 +107,37 @@ export default function AdminDashboard() {
             title: "Upload Successful",
             description: result.message,
           });
-          fetchStats(); // Re-fetch stats after successful upload
+           // Re-fetch stats after successful upload by calling the function defined in useEffect
+           (async () => {
+              const fetchStats = async () => {
+              setStatsLoading(true);
+              try {
+                const result = await getDashboardStats();
+                if (result.success) {
+                  setStats({
+                    userCount: result.userCount ?? 0,
+                    courseCount: result.courseCount ?? 0,
+                  });
+                  setTopCourses(result.topCourses ?? []);
+                } else {
+                  toast({
+                    variant: "destructive",
+                    title: "Failed to load stats",
+                    description: result.message,
+                  });
+                }
+              } catch (error: any) {
+                toast({
+                  variant: "destructive",
+                  title: "Failed to load stats",
+                  description: error.message || "An unexpected error occurred.",
+                });
+              } finally {
+                setStatsLoading(false);
+              }
+            };
+            await fetchStats();
+          })();
         } else {
           throw new Error(result.message);
         }
@@ -119,7 +152,7 @@ export default function AdminDashboard() {
         setSelectedFile(null);
       }
     } else {
-       toast({
+      toast({
         variant: "destructive",
         title: "No File Selected",
         description: "Please select an Excel file to upload.",
@@ -327,6 +360,5 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
-}
 
     
