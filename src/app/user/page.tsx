@@ -57,7 +57,7 @@ export default function UserPage() {
   const handleLogout = () => {
     if (auth) {
       auth.signOut();
-      router.push("/login");
+      router.push("/");
     }
   };
 
@@ -155,5 +155,3 @@ export default function UserPage() {
     </div>
   );
 }
-
-    
