@@ -1,4 +1,3 @@
-
 // IMPORTANT: This file should only be used in server-side code.
 // It is not intended for use in client-side code.
 import 'dotenv/config';
@@ -9,13 +8,8 @@ import { getFirestore } from 'firebase-admin/firestore';
 let app: App;
 
 function getApp(): App {
-  if (app) {
-    return app;
-  }
-
   if (getApps().length) {
-    app = getApps()[0];
-    return app;
+    return getApps()[0];
   }
 
   // Check if running in a deployed App Hosting environment
@@ -31,11 +25,12 @@ function getApp(): App {
       }
     } catch (e) {
       console.error('Error parsing FIREBASE_SERVICE_ACCOUNT:', e);
+      throw new Error('FIREBASE_SERVICE_ACCOUNT environment variable is not a valid JSON string.');
     }
     
     if (!serviceAccount) {
       throw new Error(
-        'FIREBASE_SERVICE_ACCOUNT environment variable is not set or invalid. ' +
+        'FIREBASE_SERVICE_ACCOUNT environment variable is not set. ' +
         'Please provide a service account for local development.'
       );
     }

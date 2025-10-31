@@ -1,7 +1,5 @@
-
 'use server';
 
-import { getFirestore } from 'firebase-admin/firestore';
 import { getFirebaseAdmin } from '@/firebase/admin';
 import * as XLSX from 'xlsx';
 
@@ -86,36 +84,34 @@ export async function uploadCourseContent(fileBuffer: ArrayBuffer) {
 }
 
 export async function getDashboardStats() {
-  const { db, auth } = getFirebaseAdmin();
-  if (!db || !auth) {
-    // This will now throw an error if the admin SDK is not initialized
-    // which is more helpful for debugging than returning a success:false message.
-    throw new Error('Firebase Admin SDK not initialized. Check server logs for details.');
-  }
+    try {
+        const { db, auth } = getFirebaseAdmin();
 
-  // The try/catch is removed here for debugging. If getFirebaseAdmin() or any of the
-  // subsequent calls fail, the actual error will be propagated to the client,
-  // which is what we want to see.
-  const usersPromise = auth.listUsers();
-  const coursesPromise = db.collection('courses').count().get();
-  const topCoursesPromise = db.collection('courses')
-    .orderBy('enrollmentCount', 'desc')
-    .limit(5)
-    .get();
+        const usersPromise = auth.listUsers();
+        const coursesPromise = db.collection('courses').count().get();
+        const topCoursesPromise = db.collection('courses')
+            .orderBy('enrollmentCount', 'desc')
+            .limit(5)
+            .get();
 
-  const [userRecords, coursesSnapshot, topCoursesSnapshot] = await Promise.all([
-      usersPromise, 
-      coursesPromise,
-      topCoursesPromise
-  ]);
+        const [userRecords, coursesSnapshot, topCoursesSnapshot] = await Promise.all([
+            usersPromise,
+            coursesPromise,
+            topCoursesPromise
+        ]);
 
-  const userCount = userRecords.users.length;
-  const courseCount = coursesSnapshot.data().count;
-  
-  const topCourses = topCoursesSnapshot.docs.map(doc => ({
-    name: doc.data().title,
-    users: doc.data().enrollmentCount || 0,
-  }));
+        const userCount = userRecords.users.length;
+        const courseCount = coursesSnapshot.data().count;
 
-  return { success: true, userCount, courseCount, topCourses };
+        const topCourses = topCoursesSnapshot.docs.map(doc => ({
+            name: doc.data().title,
+            users: doc.data().enrollmentCount || 0,
+        }));
+
+        return { success: true, userCount, courseCount, topCourses };
+    } catch (error: any) {
+        console.error('Failed to get dashboard stats:', error);
+        // This message will be shown in the toast on the client.
+        return { success: false, message: error.message || 'The server encountered an error.' };
+    }
 }
