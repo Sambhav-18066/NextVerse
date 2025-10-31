@@ -158,9 +158,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <div className="flex flex-col sm:gap-4 sm:py-4 md:pl-14">
+      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -206,6 +206,7 @@ export default function AdminDashboard() {
                 <CardTitle className="text-sm font-medium">
                   Enrollment Rate
                 </CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">0%</div>
@@ -331,5 +332,5 @@ export default function AdminDashboard() {
         </main>
       </div>
     </div>
-  
-    
+  );
+}
