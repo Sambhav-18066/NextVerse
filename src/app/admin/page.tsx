@@ -33,10 +33,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useFirebase } from "@/firebase";
 import { uploadCourseContent, getDashboardStats } from "@/lib/actions";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 interface TopCourse {
   name: string;
@@ -46,6 +47,7 @@ interface TopCourse {
 export default function AdminDashboard() {
   const { user } = useFirebase();
   const { toast } = useToast();
+  const router = useRouter();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [stats, setStats] = useState({ userCount: 0, courseCount: 0 });
@@ -53,36 +55,35 @@ export default function AdminDashboard() {
   const [statsLoading, setStatsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    // Only fetch stats if there is a logged-in user.
+    if (user) {
       setStatsLoading(true);
-      try {
-        const result = await getDashboardStats();
-        if (result.success) {
-          setStats({
-            userCount: result.userCount ?? 0,
-            courseCount: result.courseCount ?? 0,
-          });
-          setTopCourses(result.topCourses ?? []);
-        } else {
+      getDashboardStats()
+        .then(result => {
+          if (result.success) {
+            setStats({
+              userCount: result.userCount ?? 0,
+              courseCount: result.courseCount ?? 0,
+            });
+            setTopCourses(result.topCourses ?? []);
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Failed to load stats",
+              description: result.message,
+            });
+          }
+        })
+        .catch(error => {
           toast({
             variant: "destructive",
             title: "Failed to load stats",
-            description: result.message,
+            description: error.message || "An unexpected error occurred.",
           });
-        }
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: "Failed to load stats",
-          description: error.message || "An unexpected error occurred.",
+        })
+        .finally(() => {
+          setStatsLoading(false);
         });
-      } finally {
-        setStatsLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchStats();
     } else {
       // If there's no user, don't show loading indefinitely.
       setStatsLoading(false);
@@ -107,37 +108,8 @@ export default function AdminDashboard() {
             title: "Upload Successful",
             description: result.message,
           });
-           // Re-fetch stats after successful upload by calling the function defined in useEffect
-           (async () => {
-              const fetchStats = async () => {
-              setStatsLoading(true);
-              try {
-                const result = await getDashboardStats();
-                if (result.success) {
-                  setStats({
-                    userCount: result.userCount ?? 0,
-                    courseCount: result.courseCount ?? 0,
-                  });
-                  setTopCourses(result.topCourses ?? []);
-                } else {
-                  toast({
-                    variant: "destructive",
-                    title: "Failed to load stats",
-                    description: result.message,
-                  });
-                }
-              } catch (error: any) {
-                toast({
-                  variant: "destructive",
-                  title: "Failed to load stats",
-                  description: error.message || "An unexpected error occurred.",
-                });
-              } finally {
-                setStatsLoading(false);
-              }
-            };
-            await fetchStats();
-          })();
+          // Use router.refresh() to re-run server actions and update data
+          router.refresh();
         } else {
           throw new Error(result.message);
         }
@@ -359,6 +331,5 @@ export default function AdminDashboard() {
         </main>
       </div>
     </div>
-  );
-
+  
     
