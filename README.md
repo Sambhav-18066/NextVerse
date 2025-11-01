@@ -1,1 +1,3 @@
-NextVerse EDucation
+# NextVerse EDucation
+
+Powered by CUTM Courseware.
