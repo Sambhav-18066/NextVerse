@@ -36,7 +36,8 @@ function getApp(): App {
       );
     }
 
-    app = app /* initialized in lib */ ,
+  app = app /* initialized in lib */;
+
     });
   }
 
