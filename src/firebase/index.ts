@@ -1,5 +1,5 @@
-import app, { db, auth } from "@/lib/firebase";
 'use client';
+import app, { db, auth } from "@/lib/firebase";
 
 import { firebaseConfig } from '@/firebase/config';
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
