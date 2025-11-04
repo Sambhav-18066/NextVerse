@@ -116,3 +116,15 @@ export async function getDashboardStats() {
         return { success: false, message: error.message || 'The server encountered an error.' };
     }
 }
+
+export function getFirebaseAdmin() {
+  if (!admin.apps.length) {
+    const key = process.env.FIREBASE_ADMIN_KEY;
+    if (!key) throw new Error("FIREBASE_ADMIN_KEY missing");
+    admin.initializeApp({
+      credential: admin.credential.cert(JSON.parse(key)),
+    });
+  }
+  return admin;
+}
+
