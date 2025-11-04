@@ -1,14 +1,5 @@
+import app, { db, auth } from "@/lib/firebase";
 'use client';
-import {
-  Auth, // Import Auth type for type hinting
-  AuthError, // Import AuthError for type hinting
-  signInAnonymously,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  User,
-  UserCredential,
-  // Assume getAuth and app are initialized elsewhere
-} from 'firebase/auth';
 
 /** Initiate anonymous sign-in (non-blocking). */
 export function initiateAnonymousSignIn(

@@ -1,5 +1,6 @@
 // IMPORTANT: This file should only be used in server-side code.
 // It is not intended for use in client-side code.
+import app, { db, auth } from "@/lib/firebase";
 import 'dotenv/config';
 import { initializeApp, getApps, App, cert, ServiceAccount } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
@@ -14,8 +15,8 @@ function getApp(): App {
 
   // Check if running in a deployed App Hosting environment
   if (process.env.APP_HOSTING_CONFIG) {
-    // initializeApp() discovers credentials automatically in App Hosting
-    app = initializeApp();
+    // app /* initialized in lib */ discovers credentials automatically in App Hosting
+    app = app /* initialized in lib */ ;
   } else {
     // Not in App Hosting, so use a service account for local development
     let serviceAccount: ServiceAccount | undefined;
@@ -35,8 +36,7 @@ function getApp(): App {
       );
     }
 
-    app = initializeApp({
-      credential: cert(serviceAccount),
+    app = app /* initialized in lib */ ,
     });
   }
 

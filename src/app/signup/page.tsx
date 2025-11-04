@@ -1,4 +1,5 @@
 
+import app, { db, auth } from "@/lib/firebase";
 "use client";
 
 import Link from "next/link";
@@ -18,7 +19,6 @@ import { StarsBackground } from "@/components/stars-background";
 import { useFirebase } from "@/firebase/provider";
 import { initiateEmailSignUp } from "@/firebase/non-blocking-login";
 import { setDocumentNonBlocking } from "@/firebase/non-blocking-updates";
-import { doc } from "firebase/firestore";
 import type { AuthError, User } from "firebase/auth";
 
 export default function SignupPage() {

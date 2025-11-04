@@ -1,4 +1,5 @@
 
+import app, { db, auth } from "@/lib/firebase";
 "use client";
 
 import { StarsBackground } from "@/components/stars-background";
@@ -26,7 +27,6 @@ import {
 import { useFirebase, useDoc, useMemoFirebase } from "@/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { doc } from "firebase/firestore";
 
 interface UserProfile {
   name: string;

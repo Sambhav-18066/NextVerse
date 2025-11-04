@@ -1,3 +1,4 @@
+import app, { db, auth } from "@/lib/firebase";
 'use server';
 
 import { getFirebaseAdmin } from '@/firebase/admin';
